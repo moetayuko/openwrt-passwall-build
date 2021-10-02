@@ -1,0 +1,60 @@
+name: Scan openwrt-passwall Version
+
+on:
+  schedule:
+    - cron: "0 1 * * *" # every day at UTC 1:00AM
+  workflow_dispatch:
+
+jobs:
+  check:
+    name: Check Version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.PAT }}
+
+      - name: Checkout Upstream Code
+        uses: actions/checkout@v2
+        with:
+          repository: xiaorouji/openwrt-passwall
+          path: upstream
+          fetch-depth: 0
+
+      - name: Get Latest Version
+        id: get_version
+        run: |
+          echo "::set-output name=version::$(git -C upstream rev-parse HEAD)"
+          echo "::set-output name=tag_name::$(printf "r%s.%s" \
+            "$(git -C upstream rev-list --count HEAD)" \
+            "$(git -C upstream rev-parse --short HEAD)")"
+
+      - name: Compare Version
+        id: compare_version
+        run: |
+          latest_version="${{ steps.get_version.outputs.version }}"
+          current_version="$(cat upstream_version 2>/dev/null)" || true
+
+          if [ "$current_version" != "$latest_version" ] ; then
+            echo "::set-output name=version::$latest_version"
+          else
+            echo "::set-output name=version::"
+          fi
+
+      - name: Commit New Version
+        if: steps.compare_version.outputs.version != ''
+        run: |
+          version="${{ steps.compare_version.outputs.version }}"
+          echo $version > upstream_version
+          git add upstream_version
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git commit -m "chore: bump to xiaorouji/openwrt-passwall@${version}"
+          git push
+
+          tag_name="${{ steps.get_version.outputs.tag_name }}"
+          git tag -a "$tag_name" -m "$tag_name"
+          git push origin "$tag_name"
