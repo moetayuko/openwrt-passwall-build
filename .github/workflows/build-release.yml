@@ -162,19 +162,19 @@ jobs:
         run: |
           eval "${{ env.SDK_HOME }}/staging_dir/host/bin/ccache -s"
 
-      - name: Release and Upload Assets
-        uses: softprops/action-gh-release@v1
-        with:
-          files: "dist/**/*.ipk"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Save Output Folder
         uses: actions/upload-artifact@v2
         with:
           name: openwrt-passwall-output-${{ env.ARCH }}
           path: dist
           retention-days: 7
+
+      - name: Release and Upload Assets
+        uses: softprops/action-gh-release@v1
+        with:
+          files: "dist/**/*.ipk"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   deploy:
     runs-on: ubuntu-latest
