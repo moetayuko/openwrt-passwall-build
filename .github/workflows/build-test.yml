@@ -8,7 +8,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SDK_URL_PATH: https://downloads.openwrt.org/snapshots/targets/x86/64
-      SDK_NAME: -sdk-x86-64_
       ARCH: x86_64
       CACHE_DIR: ~/cache
     steps:

@@ -14,7 +14,6 @@ dir="$(cd "$(dirname "$0")" ; pwd)"
 cache_dir=${CACHE_DIR:-"~/cache"}
 
 sdk_url_path=${SDK_URL_PATH:-"https://downloads.openwrt.org/snapshots/targets/x86/64"}
-sdk_name=${SDK_NAME:-"-sdk-x86-64_"}
 
 sdk_home=${SDK_HOME:-"~/sdk"}
 
@@ -33,8 +32,8 @@ test -d "$feeds_dir" || mkdir -p "$feeds_dir"
 cd "$sdk_dir"
 
 if ! ( wget -q -O - "$sdk_url_path/sha256sums" | \
-	grep -- "$sdk_name" > sha256sums.small 2>/dev/null ) ; then
-	echo "Can not find ${sdk_name} file in sha256sums."
+	grep -- "-sdk-" > sha256sums.small 2>/dev/null ) ; then
+	echo "Can not find sdk file in sha256sums."
 	exit 1
 fi
 

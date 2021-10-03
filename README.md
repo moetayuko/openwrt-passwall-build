@@ -2,7 +2,10 @@
 
 Binary distribution of [xiaorouji/openwrt-passwall](https://github.com/xiaorouji/openwrt-passwall) built with official OpenWRT SDK.
 
-[![Build and Release](https://github.com/dianlujitao/openwrt-passwall-build/actions/workflows/build-release.yml/badge.svg)](https://github.com/dianlujitao/openwrt-passwall-build/actions/workflows/build-release.yml) [![Scan openwrt-passwall Version](https://github.com/dianlujitao/openwrt-passwall-build/actions/workflows/version-scan.yml/badge.svg)](https://github.com/dianlujitao/openwrt-passwall-build/actions/workflows/version-scan.yml) [![GitHub release (latest by date)](https://img.shields.io/github/v/release/dianlujitao/openwrt-passwall-build)](https://github.com/dianlujitao/openwrt-passwall-build/releases/latest) ![GitHub repo size](https://img.shields.io/github/repo-size/dianlujitao/openwrt-passwall-build)
+[![Build and Release](https://github.com/dianlujitao/openwrt-passwall-build/actions/workflows/build-release.yml/badge.svg)](https://github.com/dianlujitao/openwrt-passwall-build/actions/workflows/build-release.yml)
+[![Scan openwrt-passwall Version](https://github.com/dianlujitao/openwrt-passwall-build/actions/workflows/version-scan.yml/badge.svg)](https://github.com/dianlujitao/openwrt-passwall-build/actions/workflows/version-scan.yml)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/dianlujitao/openwrt-passwall-build)](https://github.com/dianlujitao/openwrt-passwall-build/releases/latest)
+![GitHub repo size](https://img.shields.io/github/repo-size/dianlujitao/openwrt-passwall-build)
 
 ## Install via OPKG
 
