@@ -35,24 +35,18 @@ jobs:
             sdk_url_path: https://downloads.openwrt.org/snapshots/targets/bcm53xx/generic
           - arch: arm_cortex-a9_neon
             sdk_url_path: https://downloads.openwrt.org/snapshots/targets/imx6/generic
-          - arch: arm_cortex-a9_vfpv3
-            sdk_url_path: https://downloads.openwrt.org/releases/19.07.2/targets/mvebu/cortexa9
           - arch: arm_cortex-a9_vfpv3-d16
             sdk_url_path: https://downloads.openwrt.org/snapshots/targets/mvebu/cortexa9
           - arch: arm_fa526
             sdk_url_path: https://downloads.openwrt.org/snapshots/targets/gemini/generic
           - arch: arm_mpcore
             sdk_url_path: https://downloads.openwrt.org/snapshots/targets/oxnas/ox820
-          - arch: arm_mpcore_vfp
-            sdk_url_path: https://downloads.openwrt.org/releases/19.07.7/targets/cns3xxx/generic
           - arch: arm_xscale
             sdk_url_path: https://downloads.openwrt.org/snapshots/targets/kirkwood/generic
           - arch: i386_pentium
             sdk_url_path: https://downloads.openwrt.org/snapshots/targets/x86/legacy
           - arch: i386_pentium4
             sdk_url_path: https://downloads.openwrt.org/snapshots/targets/x86/generic
-          - arch: mips64_octeon
-            sdk_url_path: http://downloads.openwrt.org/releases/18.06.5/targets/octeon/generic
           - arch: mips64_octeonplus
             sdk_url_path: https://downloads.openwrt.org/snapshots/targets/octeon/generic
           - arch: mipsel_24kc
