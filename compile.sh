@@ -13,7 +13,9 @@ dir="$(cd "$(dirname "$0")" ; pwd)"
 
 cache_dir=${CACHE_DIR:-"~/cache"}
 
-sdk_url_path=${SDK_URL_PATH:-"https://downloads.openwrt.org/snapshots/targets/x86/64"}
+sdk_target_url_path=${SDK_TARGET_URL_PATH:-"x86/64"}
+sdk_version=${SDK_VERSION:-"snapshots"}
+sdk_url_path="https://downloads.openwrt.org/${sdk_version}/targets/${sdk_target_url_path}"
 
 sdk_home=${SDK_HOME:-"~/sdk"}
 
@@ -89,7 +91,8 @@ echo "$SIGN_PRIV_KEY" > key-build
 make -j$(nproc) V=s
 
 cd bin
-test -d $dir/dist || mkdir -p $dir/dist
-cp -r --parents packages/*/passwall $dir/dist
+dist_dir=${dir}/dist/${sdk_version}
+test -d $dist_dir || mkdir -p $dist_dir
+cp -r --parents packages/*/passwall $dist_dir
 
 find $dir/dist -type f -exec ls -lh {} \;

@@ -7,75 +7,77 @@ on:
 
 jobs:
   release:
-    name: Build for ${{ matrix.arch }}
+    name: Build for ${{ matrix.target.arch }} ${{ matrix.sdk_version }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        include:
+        sdk_version: ["snapshots", "releases/21.02.0"]
+        target:
           - arch: aarch64_cortex-a53
-            sdk_url_path: https://downloads.openwrt.org/snapshots/targets/bcm27xx/bcm2710
+            sdk_target_url_path: bcm27xx/bcm2710
           - arch: aarch64_cortex-a72
-            sdk_url_path: https://downloads.openwrt.org/snapshots/targets/mvebu/cortexa72
+            sdk_target_url_path: mvebu/cortexa72
           - arch: aarch64_generic
-            sdk_url_path: http://downloads.openwrt.org/snapshots/targets/layerscape/armv8_64b
+            sdk_target_url_path: http://downloads.openwrt.org/snapshots/targets/layerscape/armv8_64b
           - arch: arm_arm1176jzf-s_vfp
-            sdk_url_path: https://downloads.openwrt.org/snapshots/targets/bcm27xx/bcm2708
+            sdk_target_url_path: bcm27xx/bcm2708
           - arch: arm_arm926ej-s
-            sdk_url_path: https://downloads.openwrt.org/snapshots/targets/at91/legacy
+            sdk_target_url_path: at91/legacy
           - arch: arm_cortex-a15_neon-vfpv4
-            sdk_url_path: https://downloads.openwrt.org/snapshots/targets/ipq806x/generic
+            sdk_target_url_path: ipq806x/generic
           - arch: arm_cortex-a5-vfpv4
-            sdk_url_path: https://downloads.openwrt.org/snapshots/targets/at91/sama5
+            sdk_target_url_path: at91/sama5
           - arch: arm_cortex-a7_neon-vfpv4
-            sdk_url_path: https://downloads.openwrt.org/snapshots/targets/bcm27xx/bcm2709
+            sdk_target_url_path: bcm27xx/bcm2709
           - arch: arm_cortex-a8_vfpv3
-            sdk_url_path: https://downloads.openwrt.org/snapshots/targets/sunxi/cortexa8
+            sdk_target_url_path: sunxi/cortexa8
           - arch: arm_cortex-a9
-            sdk_url_path: https://downloads.openwrt.org/snapshots/targets/bcm53xx/generic
+            sdk_target_url_path: bcm53xx/generic
           - arch: arm_cortex-a9_neon
-            sdk_url_path: https://downloads.openwrt.org/snapshots/targets/imx6/generic
+            sdk_target_url_path: imx6/generic
           - arch: arm_cortex-a9_vfpv3-d16
-            sdk_url_path: https://downloads.openwrt.org/snapshots/targets/mvebu/cortexa9
+            sdk_target_url_path: mvebu/cortexa9
           - arch: arm_fa526
-            sdk_url_path: https://downloads.openwrt.org/snapshots/targets/gemini/generic
+            sdk_target_url_path: gemini/generic
           - arch: arm_mpcore
-            sdk_url_path: https://downloads.openwrt.org/snapshots/targets/oxnas/ox820
+            sdk_target_url_path: oxnas/ox820
           - arch: arm_xscale
-            sdk_url_path: https://downloads.openwrt.org/snapshots/targets/kirkwood/generic
+            sdk_target_url_path: kirkwood/generic
           - arch: i386_pentium
-            sdk_url_path: https://downloads.openwrt.org/snapshots/targets/x86/legacy
+            sdk_target_url_path: x86/legacy
           - arch: i386_pentium4
-            sdk_url_path: https://downloads.openwrt.org/snapshots/targets/x86/generic
+            sdk_target_url_path: x86/generic
           - arch: mips64_octeonplus
-            sdk_url_path: https://downloads.openwrt.org/snapshots/targets/octeon/generic
+            sdk_target_url_path: octeon/generic
           - arch: mipsel_24kc
-            sdk_url_path: https://downloads.openwrt.org/snapshots/targets/ramips/mt7620
+            sdk_target_url_path: ramips/mt7620
           - arch: mipsel_24kc_24kf
-            sdk_url_path: https://downloads.openwrt.org/snapshots/targets/pistachio/generic
+            sdk_target_url_path: pistachio/generic
           - arch: mipsel_74kc
-            sdk_url_path: https://downloads.openwrt.org/snapshots/targets/bcm47xx/mips74k
+            sdk_target_url_path: bcm47xx/mips74k
           - arch: mipsel_mips32
-            sdk_url_path: https://downloads.openwrt.org/snapshots/targets/bcm47xx/generic
+            sdk_target_url_path: bcm47xx/generic
           - arch: mips_24kc
-            sdk_url_path: https://downloads.openwrt.org/snapshots/targets/ath79/generic
+            sdk_target_url_path: ath79/generic
           - arch: mips_mips32
-            sdk_url_path: https://downloads.openwrt.org/snapshots/targets/bcm63xx/generic
+            sdk_target_url_path: bcm63xx/generic
           - arch: x86_64
-            sdk_url_path: https://downloads.openwrt.org/snapshots/targets/x86/64
+            sdk_target_url_path: x86/64
           # - arch: arc_arc700
-          #   sdk_url_path: https://downloads.openwrt.org/snapshots/targets/arc770/generic
+          #   sdk_target_url_path: arc770/generic
           # - arch: arc_archs
-          #   sdk_url_path: https://downloads.openwrt.org/snapshots/targets/archs38/generic
+          #   sdk_target_url_path: archs38/generic
           # - arch: armeb_xscale
-          #   sdk_url_path: https://downloads.openwrt.org/snapshots/targets/ixp4xx/generic
+          #   sdk_target_url_path: ixp4xx/generic
           # - arch: powerpc_464fp
-          #   sdk_url_path: https://downloads.openwrt.org/snapshots/targets/apm821xx/nand
+          #   sdk_target_url_path: apm821xx/nand
           # - arch: powerpc_8540
-          #   sdk_url_path: https://downloads.openwrt.org/snapshots/targets/mpc85xx/generic
+          #   sdk_target_url_path: mpc85xx/generic
 
     env:
-      SDK_URL_PATH: ${{ matrix.sdk_url_path }}
+      SDK_VERSION: ${{ matrix.sdk_version }}
+      SDK_TARGET_URL_PATH: ${{ matrix.target.sdk_target_url_path }}
       CACHE_DIR: ~/cache
     steps:
       - name: Checkout
@@ -85,17 +87,17 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ env.CACHE_DIR }}
-          key: ${{ runner.os }}:openwrt-passwall-build:${{ matrix.arch }}:release:cache:${{ github.run_number }}
+          key: ${{ runner.os }}:openwrt-passwall-build:${{ matrix.target.arch }}:${{ matrix.sdk_version }}:release:cache:${{ github.run_number }}
           restore-keys: |
-            ${{ runner.os }}:openwrt-passwall-build:${{ matrix.arch }}:cache:
+            ${{ runner.os }}:openwrt-passwall-build:${{ matrix.target.arch }}:${{ matrix.sdk_version }}:cache:
 
       - name: Setup CCache
         uses: actions/cache@v2
         with:
           path: ~/.ccache
-          key: ${{ runner.os }}:openwrt-passwall-build:${{ matrix.arch }}:release:ccache:${{ github.run_number }}
+          key: ${{ runner.os }}:openwrt-passwall-build:${{ matrix.target.arch }}:${{ matrix.sdk_version }}:release:ccache:${{ github.run_number }}
           restore-keys: |
-            ${{ runner.os }}:openwrt-passwall-build:${{ matrix.arch }}:ccache:
+            ${{ runner.os }}:openwrt-passwall-build:${{ matrix.target.arch }}:${{ matrix.sdk_version }}:ccache:
 
       - name: Install Dependencies
         run: |
@@ -121,10 +123,14 @@ jobs:
         run: |
           eval "${{ env.SDK_HOME }}/staging_dir/host/bin/ccache -s"
 
+      - name: Sanitize SDK Version
+        id: sanitize-sdk-version
+        run: echo "::set-output name=version::$(echo $SDK_VERSION | sed 's/\//-/g')"
+
       - name: Save Output Folder
         uses: actions/upload-artifact@v2
         with:
-          name: openwrt-passwall-output-${{ matrix.arch }}
+          name: openwrt-passwall-${{ matrix.target.arch }}-${{ steps.sanitize-sdk-version.outputs.version }}
           path: dist
           retention-days: 7
 
