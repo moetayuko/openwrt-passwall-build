@@ -2,13 +2,17 @@ name: Build Test
 
 on:
   workflow_dispatch:
+    inputs:
+      arch:
+        description: 'Target architecture'
+        required: true
+        default: x86_64
 
 jobs:
   build:
     runs-on: ubuntu-latest
     env:
       SDK_URL_PATH: https://downloads.openwrt.org/snapshots/targets/x86/64
-      ARCH: x86_64
       CACHE_DIR: ~/cache
     steps:
       - name: Checkout
@@ -18,17 +22,17 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ env.CACHE_DIR }}
-          key: ${{ runner.os }}:openwrt-passwall-build:${{ env.ARCH }}:cache:${{ github.run_number }}
+          key: ${{ runner.os }}:openwrt-passwall-build:${{ github.event.inputs.arch }}:cache:${{ github.run_number }}
           restore-keys: |
-            ${{ runner.os }}:openwrt-passwall-build:${{ env.ARCH }}:cache:
+            ${{ runner.os }}:openwrt-passwall-build:${{ github.event.inputs.arch }}:cache:
 
       - name: Setup CCache
         uses: actions/cache@v2
         with:
           path: ~/.ccache
-          key: ${{ runner.os }}:openwrt-passwall-build:${{ env.ARCH }}:ccache:${{ github.run_number }}
+          key: ${{ runner.os }}:openwrt-passwall-build:${{ github.event.inputs.arch }}:ccache:${{ github.run_number }}
           restore-keys: |
-            ${{ runner.os }}:openwrt-passwall-build:${{ env.ARCH }}:ccache:
+            ${{ runner.os }}:openwrt-passwall-build:${{ github.event.inputs.arch }}:ccache:
 
       - name: Install Dependencies
         run: |

@@ -82,7 +82,6 @@ jobs:
 
     env:
       SDK_URL_PATH: ${{ matrix.sdk_url_path }}
-      ARCH: ${{ matrix.arch }}
       CACHE_DIR: ~/cache
     steps:
       - name: Checkout
@@ -92,17 +91,17 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ env.CACHE_DIR }}
-          key: ${{ runner.os }}:openwrt-passwall-build:${{ env.ARCH }}:release:cache:${{ github.run_number }}
+          key: ${{ runner.os }}:openwrt-passwall-build:${{ matrix.arch }}:release:cache:${{ github.run_number }}
           restore-keys: |
-            ${{ runner.os }}:openwrt-passwall-build:${{ env.ARCH }}:cache:
+            ${{ runner.os }}:openwrt-passwall-build:${{ matrix.arch }}:cache:
 
       - name: Setup CCache
         uses: actions/cache@v2
         with:
           path: ~/.ccache
-          key: ${{ runner.os }}:openwrt-passwall-build:${{ env.ARCH }}:release:ccache:${{ github.run_number }}
+          key: ${{ runner.os }}:openwrt-passwall-build:${{ matrix.arch }}:release:ccache:${{ github.run_number }}
           restore-keys: |
-            ${{ runner.os }}:openwrt-passwall-build:${{ env.ARCH }}:ccache:
+            ${{ runner.os }}:openwrt-passwall-build:${{ matrix.arch }}:ccache:
 
       - name: Install Dependencies
         run: |
@@ -131,7 +130,7 @@ jobs:
       - name: Save Output Folder
         uses: actions/upload-artifact@v2
         with:
-          name: openwrt-passwall-output-${{ env.ARCH }}
+          name: openwrt-passwall-output-${{ matrix.arch }}
           path: dist
           retention-days: 7
 
