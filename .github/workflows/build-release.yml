@@ -19,7 +19,7 @@ jobs:
           - arch: aarch64_cortex-a72
             sdk_target_url_path: mvebu/cortexa72
           - arch: aarch64_generic
-            sdk_target_url_path: http://downloads.openwrt.org/snapshots/targets/layerscape/armv8_64b
+            sdk_target_url_path: layerscape/armv8_64b
           - arch: arm_arm1176jzf-s_vfp
             sdk_target_url_path: bcm27xx/bcm2708
           - arch: arm_arm926ej-s
