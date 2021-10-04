@@ -4,7 +4,6 @@ Binary distribution of [xiaorouji/openwrt-passwall](https://github.com/xiaorouji
 
 [![Build and Release](https://github.com/dianlujitao/openwrt-passwall-build/actions/workflows/build-release.yml/badge.svg)](https://github.com/dianlujitao/openwrt-passwall-build/actions/workflows/build-release.yml)
 [![Scan openwrt-passwall Version](https://github.com/dianlujitao/openwrt-passwall-build/actions/workflows/version-scan.yml/badge.svg)](https://github.com/dianlujitao/openwrt-passwall-build/actions/workflows/version-scan.yml)
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/dianlujitao/openwrt-passwall-build)](https://github.com/dianlujitao/openwrt-passwall-build/releases/latest)
 ![GitHub repo size](https://img.shields.io/github/repo-size/dianlujitao/openwrt-passwall-build)
 
 ## Install via OPKG
@@ -19,7 +18,7 @@ opkg-key add passwall.pub
 2. Add opkg repository:
 
 ```sh
-echo "src/gz passwall https://dianlujitao.github.io/openwrt-passwall-build/packages/$(. /etc/openwrt_release ; echo $DISTRIB_ARCH)/passwall" \
+echo "src/gz passwall https://dianlujitao.github.io/openwrt-passwall-build/releases/$(. /etc/openwrt_release ; echo $DISTRIB_RELEASE)/packages/$(. /etc/openwrt_release ; echo $DISTRIB_ARCH)/passwall" \
   >> /etc/opkg/customfeeds.conf
 ```
 
@@ -38,7 +37,7 @@ opkg install luci-app-passwall
 
 ## Manual Install
 
-- Download pre build ipk file from [releases](https://github.com/dianlujitao/openwrt-passwall-build/releases)
+- Download pre build ipk file from [gh-pages branch](https://github.com/dianlujitao/openwrt-passwall-build/tree/gh-pages).
 
 - Upload file to your router, install it with ssh command.
 
