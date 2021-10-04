@@ -156,7 +156,9 @@ jobs:
           cp passwall.pub dist
 
       - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
+        uses: Pendect/action-rsyncer@v1.1.0
+        env:
+          DEPLOY_KEY: ${{ secrets.OSDN_DEPLOY_KEY }}
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: dist
+          src: 'dist/'
+          dest: 'dianlujitao@storage.osdn.net:/storage/groups/o/op/openwrt-passwall-build/'
