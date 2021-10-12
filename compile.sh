@@ -1,7 +1,7 @@
 #!/bin/sh -e
 #
 # Copyright (C) 2021 Xingwang Liao
-# Copyright (C) 2021 dianlujitao
+# Copyright (C) 2021 MoetaYuko
 #
 
 if [ -z "$SIGN_PRIV_KEY" ]; then
@@ -86,6 +86,9 @@ make defconfig
 
 # Remove upx from cross-compile targets
 sed -i 's/\(CONFIG_PACKAGE_upx=\)m/\1n/' .config
+
+# Must build before the rest components
+make -j$(nproc) package/upx/host/compile
 
 echo "$SIGN_PRIV_KEY" > key-build
 make -j$(nproc) V=s
