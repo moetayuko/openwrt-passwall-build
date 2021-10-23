@@ -23,11 +23,13 @@ jobs:
           - arch: arm_arm1176jzf-s_vfp
             sdk_target_url_path: bcm27xx/bcm2708
           - arch: arm_arm926ej-s
-            sdk_target_url_path: at91/legacy
+            sdk_target_url_path: at91/sam9x
           - arch: arm_cortex-a15_neon-vfpv4
             sdk_target_url_path: ipq806x/generic
-          - arch: arm_cortex-a5-vfpv4
+          - arch: arm_cortex-a5_vfpv4
             sdk_target_url_path: at91/sama5
+          - arch: arm_cortex-a7
+            sdk_target_url_path: mediatek/mt7629
           - arch: arm_cortex-a7_neon-vfpv4
             sdk_target_url_path: bcm27xx/bcm2709
           - arch: arm_cortex-a8_vfpv3
@@ -44,12 +46,18 @@ jobs:
             sdk_target_url_path: oxnas/ox820
           - arch: arm_xscale
             sdk_target_url_path: kirkwood/generic
-          - arch: i386_pentium
+          - arch: i386_pentium-mmx
             sdk_target_url_path: x86/legacy
           - arch: i386_pentium4
             sdk_target_url_path: x86/generic
           - arch: mips64_octeonplus
             sdk_target_url_path: octeon/generic
+          - arch: mips_24kc
+            sdk_target_url_path: ath79/generic
+          - arch: mips_4kec
+            sdk_target_url_path: realtek/generic
+          - arch: mips_mips32
+            sdk_target_url_path: bcm63xx/generic
           - arch: mipsel_24kc
             sdk_target_url_path: ramips/mt7620
           - arch: mipsel_24kc_24kf
@@ -58,18 +66,12 @@ jobs:
             sdk_target_url_path: bcm47xx/mips74k
           - arch: mipsel_mips32
             sdk_target_url_path: bcm47xx/generic
-          - arch: mips_24kc
-            sdk_target_url_path: ath79/generic
-          - arch: mips_mips32
-            sdk_target_url_path: bcm63xx/generic
           - arch: x86_64
             sdk_target_url_path: x86/64
           # - arch: arc_arc700
           #   sdk_target_url_path: arc770/generic
           # - arch: arc_archs
           #   sdk_target_url_path: archs38/generic
-          # - arch: armeb_xscale
-          #   sdk_target_url_path: ixp4xx/generic
           # - arch: powerpc_464fp
           #   sdk_target_url_path: apm821xx/nand
           # - arch: powerpc_8540
