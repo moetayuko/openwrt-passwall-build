@@ -23,7 +23,7 @@ jobs:
           - arch: arm_arm1176jzf-s_vfp
             sdk_target_url_path: bcm27xx/bcm2708
           - arch: arm_arm926ej-s
-            sdk_target_url_path: at91/sam9x
+            sdk_target_url_path: mxs/generic
           - arch: arm_cortex-a15_neon-vfpv4
             sdk_target_url_path: ipq806x/generic
           - arch: arm_cortex-a5_vfpv4
