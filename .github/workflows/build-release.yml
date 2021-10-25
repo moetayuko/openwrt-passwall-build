@@ -20,6 +20,10 @@ jobs:
             sdk_target_url_path: mvebu/cortexa72
           - arch: aarch64_generic
             sdk_target_url_path: layerscape/armv8_64b
+          - arch: arc_arc700
+            sdk_target_url_path: arc770/generic
+          - arch: arc_archs
+            sdk_target_url_path: archs38/generic
           - arch: arm_arm1176jzf-s_vfp
             sdk_target_url_path: bcm27xx/bcm2708
           - arch: arm_arm926ej-s
@@ -66,16 +70,12 @@ jobs:
             sdk_target_url_path: bcm47xx/mips74k
           - arch: mipsel_mips32
             sdk_target_url_path: bcm47xx/generic
+          - arch: powerpc_464fp
+            sdk_target_url_path: apm821xx/nand
+          - arch: powerpc_8540
+            sdk_target_url_path: mpc85xx/p1010
           - arch: x86_64
             sdk_target_url_path: x86/64
-          # - arch: arc_arc700
-          #   sdk_target_url_path: arc770/generic
-          # - arch: arc_archs
-          #   sdk_target_url_path: archs38/generic
-          # - arch: powerpc_464fp
-          #   sdk_target_url_path: apm821xx/nand
-          # - arch: powerpc_8540
-          #   sdk_target_url_path: mpc85xx/generic
 
     env:
       SDK_VERSION: ${{ matrix.sdk_version }}
