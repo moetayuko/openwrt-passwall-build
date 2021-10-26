@@ -91,6 +91,7 @@ jobs:
           path: ${{ env.CACHE_DIR }}
           key: ${{ runner.os }}:openwrt-passwall-build:${{ matrix.target.arch }}:${{ matrix.sdk_version }}:release:cache:${{ github.run_number }}
           restore-keys: |
+            ${{ runner.os }}:openwrt-passwall-build:${{ matrix.target.arch }}:${{ matrix.sdk_version }}:release:cache:
             ${{ runner.os }}:openwrt-passwall-build:${{ matrix.target.arch }}:${{ matrix.sdk_version }}:cache:
 
       - name: Setup CCache
@@ -99,6 +100,7 @@ jobs:
           path: ~/.ccache
           key: ${{ runner.os }}:openwrt-passwall-build:${{ matrix.target.arch }}:${{ matrix.sdk_version }}:release:ccache:${{ github.run_number }}
           restore-keys: |
+            ${{ runner.os }}:openwrt-passwall-build:${{ matrix.target.arch }}:${{ matrix.sdk_version }}:release:ccache:
             ${{ runner.os }}:openwrt-passwall-build:${{ matrix.target.arch }}:${{ matrix.sdk_version }}:ccache:
 
       - name: Install Dependencies
