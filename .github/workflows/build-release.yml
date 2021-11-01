@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        sdk_version: ["snapshots", "releases/21.02.0"]
+        sdk_version: ["snapshots", "releases/21.02.0", "releases/21.02.1"]
         target:
           - arch: aarch64_cortex-a53
             sdk_target_url_path: bcm27xx/bcm2710
