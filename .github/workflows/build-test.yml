@@ -24,26 +24,9 @@ jobs:
     env:
       SDK_VERSION: ${{ github.event.inputs.sdk_version }}
       SDK_TARGET_URL_PATH: ${{ github.event.inputs.sdk_target_url_path }}
-      CACHE_DIR: ~/cache
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-
-      - name: Setup Cache
-        uses: actions/cache@v2
-        with:
-          path: ${{ env.CACHE_DIR }}
-          key: ${{ runner.os }}:openwrt-passwall-build:${{ github.event.inputs.arch }}:${{ github.event.inputs.sdk_version }}:cache:${{ github.run_number }}
-          restore-keys: |
-            ${{ runner.os }}:openwrt-passwall-build:${{ github.event.inputs.arch }}:${{ github.event.inputs.sdk_version }}:cache:
-
-      - name: Setup CCache
-        uses: actions/cache@v2
-        with:
-          path: ~/.ccache
-          key: ${{ runner.os }}:openwrt-passwall-build:${{ github.event.inputs.arch }}:${{ github.event.inputs.sdk_version }}:ccache:${{ github.run_number }}
-          restore-keys: |
-            ${{ runner.os }}:openwrt-passwall-build:${{ github.event.inputs.arch }}:${{ github.event.inputs.sdk_version }}:ccache:
 
       - name: Install Dependencies
         run: |
@@ -53,21 +36,12 @@ jobs:
       - name: Prepare For Build
         run: |
           sdk_home="$(mktemp -d)"
-
-          test -d ~/.ccache || mkdir -p ~/.ccache
-          ln -sf ~/.ccache "$sdk_home/.ccache"
-
           echo "SDK_HOME=$sdk_home" >> $GITHUB_ENV
-          echo "CONFIG_CCACHE=y" >> $GITHUB_ENV
 
       - name: Build package
         env:
           SIGN_PRIV_KEY: ${{ secrets.SIGN_PRIV_KEY }}
         run: ./compile.sh
-
-      - name: Show CCache Status
-        run: |
-          eval "${{ env.SDK_HOME }}/staging_dir/host/bin/ccache -s"
 
       - name: Save Build Result
         uses: actions/upload-artifact@v2
