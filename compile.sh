@@ -93,9 +93,10 @@ make -j$(nproc) package/upx/host/compile
 echo "$SIGN_PRIV_KEY" > key-build
 make -j$(nproc) V=s
 
-cd bin
-dist_dir=${dir}/dist/${sdk_version}
+sdk_abi=${SDK_ABI:-"snapshots/packages"}
+dist_dir=${dir}/dist/${sdk_abi}
 test -d $dist_dir || mkdir -p $dist_dir
-cp -r --parents packages/*/passwall $dist_dir
 
+cd bin/packages
+cp -r --parents */passwall $dist_dir
 find $dir/dist -type f -exec ls -lh {} \;

@@ -7,12 +7,19 @@ on:
 
 jobs:
   release:
-    name: Build for ${{ matrix.target.arch }} ${{ matrix.sdk_version }}
+    name: Build for ${{ matrix.target.arch }} ${{ matrix.sdk.abi }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        sdk_version: ["snapshots", "releases/21.02.0", "releases/21.02.1"]
+        sdk:
+          - abi: snapshots/packages
+            version: snapshots
+          - abi: releases/packages-21.02
+            version: releases/21.02.1
+            symlinks: >-
+              releases/21.02.0/packages
+              releases/21.02.1/packages
         target:
           - arch: aarch64_cortex-a53
             sdk_target_url_path: bcm27xx/bcm2710
@@ -78,7 +85,8 @@ jobs:
             sdk_target_url_path: x86/64
 
     env:
-      SDK_VERSION: ${{ matrix.sdk_version }}
+      SDK_ABI: ${{ matrix.sdk.abi }}
+      SDK_VERSION: ${{ matrix.sdk.version }}
       SDK_TARGET_URL_PATH: ${{ matrix.target.sdk_target_url_path }}
     steps:
       - name: Checkout
@@ -99,9 +107,19 @@ jobs:
           SIGN_PRIV_KEY: ${{ secrets.SIGN_PRIV_KEY }}
         run: ./compile.sh
 
+      - name: Symlink for patch versions
+        run: |
+          src=$(echo ${{ matrix.sdk.abi }} | sed s/releases/../)
+          for dst in ${{ matrix.sdk.symlinks }}; do
+            dst=dist/$dst
+            dst_dir=$(dirname $dst)
+            test -d $dst_dir || mkdir -p $dst_dir
+            ln -sf $src $dst
+          done
+
       - name: Sanitize SDK Version
         id: sanitize-sdk-version
-        run: echo "::set-output name=version::$(echo $SDK_VERSION | sed 's/\//-/g')"
+        run: echo "::set-output name=version::$(echo $SDK_ABI | sed 's/\//-/g')"
 
       - name: Save Output Folder
         uses: actions/upload-artifact@v2
