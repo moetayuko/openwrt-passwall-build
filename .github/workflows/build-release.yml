@@ -71,8 +71,8 @@ jobs:
             sdk_target_url_path: bcm63xx/generic
           - arch: mipsel_24kc
             sdk_target_url_path: ramips/mt7620
-          - arch: mipsel_24kc_24kf
-            sdk_target_url_path: pistachio/generic
+          # - arch: mipsel_24kc_24kf
+          #   sdk_target_url_path: pistachio/generic
           - arch: mipsel_74kc
             sdk_target_url_path: bcm47xx/mips74k
           - arch: mipsel_mips32
