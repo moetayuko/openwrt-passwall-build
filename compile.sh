@@ -87,6 +87,11 @@ make defconfig
 # Remove upx from cross-compile targets
 sed -i 's/\(CONFIG_PACKAGE_upx=\)m/\1n/' .config
 
+# Remove bpftool as cross-compile fix for bpftool-bootstrap is not included in v5.10,
+# which is used by 21.02.x.
+# Ref: https://github.com/torvalds/linux/commit/8859b0da5aac28e4e9651c8971e7af344f8ffec1
+sed -i 's/\(CONFIG_PACKAGE_bpftool-\(full\|minimal\)=\)m/\1n/' .config
+
 # Must build before the rest components
 make -j$(nproc) package/upx/host/compile
 
