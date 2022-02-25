@@ -65,8 +65,6 @@ jobs:
             sdk_target_url_path: octeon/generic
           - arch: mips_24kc
             sdk_target_url_path: ath79/generic
-          - arch: mips_4kec
-            sdk_target_url_path: realtek/generic
           - arch: mips_mips32
             sdk_target_url_path: bcm63xx/generic
           - arch: mipsel_24kc
@@ -83,6 +81,22 @@ jobs:
             sdk_target_url_path: mpc85xx/p1010
           - arch: x86_64
             sdk_target_url_path: x86/64
+        include:
+          - sdk:
+              abi: snapshots/packages
+              version: snapshots
+            target:
+              arch: mips_4kec
+              sdk_target_url_path: realtek/rtl838x
+          - sdk:
+              abi: releases/packages-21.02
+              version: releases/21.02.1
+              symlinks: >-
+                releases/21.02.0/packages
+                releases/21.02.1/packages
+            target:
+              arch: mips_4kec
+              sdk_target_url_path: realtek/generic
 
     env:
       SDK_ABI: ${{ matrix.sdk.abi }}
