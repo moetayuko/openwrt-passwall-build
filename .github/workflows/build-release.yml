@@ -16,10 +16,11 @@ jobs:
           - abi: snapshots/packages
             version: snapshots
           - abi: releases/packages-21.02
-            version: releases/21.02.1
+            version: releases/21.02.2
             symlinks: >-
               releases/21.02.0/packages
               releases/21.02.1/packages
+              releases/21.02.2/packages
         target:
           - arch: aarch64_cortex-a53
             sdk_target_url_path: bcm27xx/bcm2710
@@ -90,10 +91,11 @@ jobs:
               sdk_target_url_path: realtek/rtl838x
           - sdk:
               abi: releases/packages-21.02
-              version: releases/21.02.1
+              version: releases/21.02.2
               symlinks: >-
                 releases/21.02.0/packages
                 releases/21.02.1/packages
+                releases/21.02.2/packages
             target:
               arch: mips_4kec
               sdk_target_url_path: realtek/generic
