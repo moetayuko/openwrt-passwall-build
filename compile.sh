@@ -1,7 +1,7 @@
 #!/bin/sh -e
 #
 # Copyright (C) 2021 Xingwang Liao
-# Copyright (C) 2021 MoetaYuko
+# Copyright (C) 2021-2022 MoetaYuko
 #
 
 if [ -z "$SIGN_PRIV_KEY" ]; then
@@ -71,7 +71,10 @@ s#git.openwrt.org/feed/packages#github.com/openwrt/packages#
 s#git.openwrt.org/project/luci#github.com/openwrt/luci#
 s#git.openwrt.org/feed/telephony#github.com/openwrt/telephony#
 ' feeds.conf
-echo 'src-git passwall https://github.com/xiaorouji/openwrt-passwall' >> feeds.conf
+cat << EOF >> feeds.conf
+src-git passwall_luci https://github.com/xiaorouji/openwrt-passwall;luci
+src-git passwall_packages https://github.com/xiaorouji/openwrt-passwall;packages
+EOF
 
 ./scripts/feeds update -a
 
@@ -80,7 +83,8 @@ if [ ! -d "package/openwrt-upx" ] ; then
 		https://github.com/kuoruan/openwrt-upx.git package/openwrt-upx
 fi
 
-./scripts/feeds install -a -p passwall
+./scripts/feeds install -a -p passwall_luci
+./scripts/feeds install -a -p passwall_packages
 
 make defconfig
 
@@ -103,5 +107,5 @@ dist_dir=${dir}/dist/${sdk_abi}
 test -d $dist_dir || mkdir -p $dist_dir
 
 cd bin/packages
-cp -r --parents */passwall $dist_dir
+cp -r --parents */passwall* $dist_dir
 find $dir/dist -type f -exec ls -lh {} \;

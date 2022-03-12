@@ -17,8 +17,12 @@ opkg-key add passwall.pub
 2. Add opkg repository:
 
 ```sh
-echo "src/gz passwall https://mirrors.tuna.tsinghua.edu.cn/osdn/storage/g/o/op/openwrt-passwall-build/releases/$(. /etc/openwrt_release ; echo $DISTRIB_RELEASE)/packages/$(. /etc/openwrt_release ; echo $DISTRIB_ARCH)/passwall" \
-  >> /etc/opkg/customfeeds.conf
+release=$(. /etc/openwrt_release ; echo $DISTRIB_RELEASE)
+arch=$(. /etc/openwrt_release ; echo $DISTRIB_ARCH)
+cat << EOF >> /etc/opkg/customfeeds.conf
+src/gz passwall_luci https://mirrors.tuna.tsinghua.edu.cn/osdn/storage/g/o/op/openwrt-passwall-build/releases/$release/packages/$arch/passwall_luci
+src/gz passwall_packages https://mirrors.tuna.tsinghua.edu.cn/osdn/storage/g/o/op/openwrt-passwall-build/releases/$release/packages/$arch/passwall_packages
+EOF
 ```
 
 > TUNA's mirror might not be up-to-date, download from `https://osdn.net/projects/openwrt-passwall-build/storage/` whenever necessary.

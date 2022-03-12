@@ -11,24 +11,30 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           token: ${{ secrets.PAT }}
 
-      - name: Checkout Upstream Code
-        uses: actions/checkout@v2
+      - name: Checkout Upstream Luci
+        uses: actions/checkout@v3
         with:
           repository: xiaorouji/openwrt-passwall
-          path: upstream
-          fetch-depth: 0
+          ref: luci
+          path: passwall_luci
+
+      - name: Checkout Upstream Packages
+        uses: actions/checkout@v3
+        with:
+          repository: xiaorouji/openwrt-passwall
+          ref: packages
+          path: passwall_packages
 
       - name: Get Latest Version
         id: get_version
         run: |
-          echo "::set-output name=version::$(git -C upstream rev-parse HEAD)"
-          echo "::set-output name=tag_name::$(printf "r%s.%s" \
-            "$(git -C upstream rev-list --count HEAD)" \
-            "$(git -C upstream rev-parse --short HEAD)")"
+          echo "::set-output name=version::$(printf "%s-%s" \
+            "$(git -C passwall_luci rev-parse HEAD)" \
+            "$(git -C passwall_packages rev-parse HEAD)")"
 
       - name: Compare Version
         id: compare_version
@@ -52,9 +58,13 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git commit -m "chore: bump to xiaorouji/openwrt-passwall@${version}"
+          IFS=- read luci_ver pkgs_ver <<< $version
+          tag_name="${luci_ver:0:7}-${pkgs_ver:0:7}"
+          commit_url="xiaorouji/openwrt-passwall@%s"
+
+          git commit -m "chore: bump to ${tag_name}" \
+            -m "$(printf "luci: ${commit_url}\npackages: ${commit_url}" luci_ver pkgs_ver)"
           git push
 
-          tag_name="${{ steps.get_version.outputs.tag_name }}"
           git tag -a "$tag_name" -m "$tag_name"
           git push origin "$tag_name"
