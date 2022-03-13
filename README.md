@@ -17,8 +17,7 @@ opkg-key add passwall.pub
 2. Add opkg repository:
 
 ```sh
-release=$(. /etc/openwrt_release ; echo $DISTRIB_RELEASE)
-arch=$(. /etc/openwrt_release ; echo $DISTRIB_ARCH)
+read release arch <<< $(. /etc/openwrt_release ; echo $DISTRIB_RELEASE $DISTRIB_ARCH)
 cat << EOF >> /etc/opkg/customfeeds.conf
 src/gz passwall_luci https://mirrors.tuna.tsinghua.edu.cn/osdn/storage/g/o/op/openwrt-passwall-build/releases/$release/packages/$arch/passwall_luci
 src/gz passwall_packages https://mirrors.tuna.tsinghua.edu.cn/osdn/storage/g/o/op/openwrt-passwall-build/releases/$release/packages/$arch/passwall_packages
