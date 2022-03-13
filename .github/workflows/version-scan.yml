@@ -63,7 +63,7 @@ jobs:
           commit_url="xiaorouji/openwrt-passwall@%s"
 
           git commit -m "chore: bump to ${tag_name}" \
-            -m "$(printf "luci: ${commit_url}\npackages: ${commit_url}" luci_ver pkgs_ver)"
+            -m "$(printf "luci: ${commit_url}\npackages: ${commit_url}" ${luci_ver} ${pkgs_ver})"
           git push
 
           git tag -a "$tag_name" -m "$tag_name"
