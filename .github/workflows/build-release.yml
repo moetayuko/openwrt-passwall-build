@@ -28,8 +28,6 @@ jobs:
             sdk_target_url_path: mvebu/cortexa72
           - arch: aarch64_generic
             sdk_target_url_path: layerscape/armv8_64b
-          - arch: arc_arc700
-            sdk_target_url_path: arc770/generic
           - arch: arc_archs
             sdk_target_url_path: archs38/generic
           - arch: arm_arm1176jzf-s_vfp
@@ -49,7 +47,7 @@ jobs:
           - arch: arm_cortex-a9
             sdk_target_url_path: bcm53xx/generic
           - arch: arm_cortex-a9_neon
-            sdk_target_url_path: imx6/generic
+            sdk_target_url_path: zynq/generic
           - arch: arm_cortex-a9_vfpv3-d16
             sdk_target_url_path: mvebu/cortexa9
           - arch: arm_fa526
