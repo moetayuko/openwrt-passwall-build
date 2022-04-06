@@ -118,7 +118,6 @@ jobs:
 
       - name: Build package
         env:
-          OPENWRT_GOLANG_COMMIT: d0efe27a8c35b5580304838548542e9aaf344ac5
           SIGN_PRIV_KEY: ${{ secrets.SIGN_PRIV_KEY }}
         run: ./compile.sh
 

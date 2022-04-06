@@ -11,8 +11,6 @@ fi
 
 dir="$(cd "$(dirname "$0")" ; pwd)"
 
-golang_commit="$OPENWRT_GOLANG_COMMIT"
-
 cache_dir=${CACHE_DIR:-"~/cache"}
 
 sdk_target_url_path=${SDK_TARGET_URL_PATH:-"x86/64"}
@@ -79,15 +77,6 @@ src-git passwall_packages https://github.com/xiaorouji/openwrt-passwall;packages
 EOF
 
 ./scripts/feeds update -a
-
-# replace golang with version defined in env
-if [ -n "$golang_commit" ] ; then
-	( test -d "feeds/packages/lang/golang" && \
-		rm -rf "feeds/packages/lang/golang" ) || true
-
-	curl "https://codeload.github.com/openwrt/packages/tar.gz/$golang_commit" | \
-		tar -xz -C "feeds/packages/lang" --strip=2 "packages-$golang_commit/lang/golang"
-fi
 
 if [ ! -d "package/openwrt-upx" ] ; then
 	git clone -b master --depth 1 \
