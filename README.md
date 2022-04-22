@@ -17,12 +17,20 @@ opkg-key add passwall.pub
 2. Add opkg repository:
 
 ```sh
-read release arch <<< $(. /etc/openwrt_release ; echo $DISTRIB_RELEASE $DISTRIB_ARCH)
+read release arch <<< $(. /etc/openwrt_release ; echo ${DISTRIB_RELEASE%.*} $DISTRIB_ARCH)
 cat << EOF >> /etc/opkg/customfeeds.conf
-src/gz passwall_luci https://mirrors.tuna.tsinghua.edu.cn/osdn/storage/g/o/op/openwrt-passwall-build/releases/$release/packages/$arch/passwall_luci
-src/gz passwall_packages https://mirrors.tuna.tsinghua.edu.cn/osdn/storage/g/o/op/openwrt-passwall-build/releases/$release/packages/$arch/passwall_packages
+src/gz passwall_luci https://mirrors.tuna.tsinghua.edu.cn/osdn/storage/g/o/op/openwrt-passwall-build/releases/packages-$release/$arch/passwall_luci
+src/gz passwall_packages https://mirrors.tuna.tsinghua.edu.cn/osdn/storage/g/o/op/openwrt-passwall-build/releases/packages-$release/$arch/passwall_packages
 EOF
 ```
+OR
+```sh
+cat << EOF >> /etc/opkg/customfeeds.conf
+src/gz passwall_luci https://mirrors.tuna.tsinghua.edu.cn/osdn/storage/g/o/op/openwrt-passwall-build/snapshots/packages/$arch/passwall_luci
+src/gz passwall_packages https://mirrors.tuna.tsinghua.edu.cn/osdn/storage/g/o/op/openwrt-passwall-build/snapshots/packages/$arch/passwall_packages
+EOF
+```
+in case you use a snapshot build.
 
 > TUNA's mirror might not be up-to-date, download from `https://osdn.net/projects/openwrt-passwall-build/storage/` whenever necessary.
 

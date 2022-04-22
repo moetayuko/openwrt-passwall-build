@@ -16,11 +16,7 @@ jobs:
           - abi: snapshots/packages
             version: snapshots
           - abi: releases/packages-21.02
-            version: releases/21.02.2
-            symlinks: >-
-              releases/21.02.0/packages
-              releases/21.02.1/packages
-              releases/21.02.2/packages
+            version: releases/21.02.3
         target:
           - arch: aarch64_cortex-a53
             sdk_target_url_path: bcm27xx/bcm2710
@@ -89,11 +85,7 @@ jobs:
               sdk_target_url_path: realtek/rtl838x
           - sdk:
               abi: releases/packages-21.02
-              version: releases/21.02.2
-              symlinks: >-
-                releases/21.02.0/packages
-                releases/21.02.1/packages
-                releases/21.02.2/packages
+              version: releases/21.02.3
             target:
               arch: mips_4kec
               sdk_target_url_path: realtek/generic
@@ -104,7 +96,7 @@ jobs:
       SDK_TARGET_URL_PATH: ${{ matrix.target.sdk_target_url_path }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install Dependencies
         run: |
@@ -121,16 +113,6 @@ jobs:
           SIGN_PRIV_KEY: ${{ secrets.SIGN_PRIV_KEY }}
         run: ./compile.sh
 
-      - name: Symlink for patch versions
-        run: |
-          src=$(echo ${{ matrix.sdk.abi }} | sed s/releases/../)
-          for dst in ${{ matrix.sdk.symlinks }}; do
-            dst=dist/$dst
-            dst_dir=$(dirname $dst)
-            test -d $dst_dir || mkdir -p $dst_dir
-            ln -sf $src $dst
-          done
-
       - name: Tar Output Folder
         run: tar -cf dist.tar dist
 
@@ -139,7 +121,7 @@ jobs:
         run: echo "::set-output name=version::$(echo $SDK_ABI | sed 's/\//-/g')"
 
       - name: Upload Output Folder
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: openwrt-passwall-${{ matrix.target.arch }}-${{ steps.sanitize-sdk-version.outputs.version }}
           path: dist.tar
@@ -150,10 +132,10 @@ jobs:
     needs: release
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Fetch All Builds
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           path: all-builds
 
@@ -173,4 +155,3 @@ jobs:
         with:
           src: 'dist/'
           dest: 'dianlujitao@storage.osdn.net:/storage/groups/o/op/openwrt-passwall-build/'
-          options: --copy-links
