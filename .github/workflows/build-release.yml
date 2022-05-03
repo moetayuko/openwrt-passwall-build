@@ -48,6 +48,8 @@ jobs:
             tag: snapshot
           - abi: releases/packages-21.02
             tag: openwrt-21.02
+          - abi: releases/packages-22.03
+            tag: openwrt-22.03
         include:
           - arch: arc_arc700
             sdk:
