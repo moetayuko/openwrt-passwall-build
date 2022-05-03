@@ -48,6 +48,11 @@ jobs:
             tag: snapshot
           - abi: releases/packages-21.02
             tag: openwrt-21.02
+        include:
+          - arch: arc_arc700
+            sdk:
+              abi: releases/packages-21.02
+              tag: openwrt-21.02
 
     steps:
       - name: Checkout
