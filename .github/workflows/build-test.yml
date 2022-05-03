@@ -11,41 +11,25 @@ on:
       sdk_version:
         description: 'SDK version'
         required: true
-        default: snapshots
-
-      sdk_target_url_path:
-        description: 'SDK target URL path'
-        required: true
-        default: x86/64
+        default: snapshot
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      SDK_VERSION: ${{ github.event.inputs.sdk_version }}
-      SDK_TARGET_URL_PATH: ${{ github.event.inputs.sdk_target_url_path }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Install Dependencies
-        run: |
-          sudo apt-get update && \
-            sudo apt-get install -yq gettext libncurses5-dev xsltproc
-
-      - name: Prepare For Build
-        run: |
-          sdk_home="$(mktemp -d)"
-          echo "SDK_HOME=$sdk_home" >> $GITHUB_ENV
-
       - name: Build package
+        uses: MoetaYuko/gh-action-sdk@master
         env:
-          SIGN_PRIV_KEY: ${{ secrets.SIGN_PRIV_KEY }}
-        run: ./compile.sh
+          ARCH: ${{ github.event.inputs.arch }}-${{ github.event.inputs.sdk_version }}
+          EXTRA_FEEDS: >-
+            src-git|passwall_luci|https://github.com/xiaorouji/openwrt-passwall;luci
+            src-git|passwall_packages|https://github.com/xiaorouji/openwrt-passwall;packages
+          KEY_BUILD: ${{ secrets.SIGN_PRIV_KEY }}
+          V: s
 
       - name: Save Build Result
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: openwrt-passwall
-          path: "dist/**/*.ipk"
+          path: bin/packages/${{ github.event.inputs.arch }}/passwall*/*.ipk
           retention-days: 7
