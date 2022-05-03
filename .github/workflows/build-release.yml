@@ -3,7 +3,7 @@ name: Build and Release
 on:
   push:
     tags:
-      - "*"
+      - "test/**"
 
 jobs:
   release:
@@ -122,4 +122,4 @@ jobs:
           DEPLOY_KEY: ${{ secrets.OSDN_DEPLOY_KEY }}
         with:
           src: 'dist/'
-          dest: 'dianlujitao@storage.osdn.net:/storage/groups/o/op/openwrt-passwall-build/'
+          dest: 'dianlujitao@storage.osdn.net:/storage/groups/o/op/openwrt-passwall-build/test/'
