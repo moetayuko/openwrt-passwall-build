@@ -7,123 +7,84 @@ on:
 
 jobs:
   release:
-    name: Build for ${{ matrix.target.arch }} ${{ matrix.sdk.abi }}
+    name: Build for ${{ matrix.arch }}-${{ matrix.sdk.tag }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
+        arch:
+          - aarch64_cortex-a53
+          - aarch64_cortex-a72
+          - aarch64_generic
+          - arc_archs
+          - arm_arm1176jzf-s_vfp
+          - arm_arm926ej-s
+          - arm_cortex-a15_neon-vfpv4
+          - arm_cortex-a5_vfpv4
+          - arm_cortex-a7
+          - arm_cortex-a7_neon-vfpv4
+          - arm_cortex-a8_vfpv3
+          - arm_cortex-a9
+          - arm_cortex-a9_neon
+          - arm_cortex-a9_vfpv3-d16
+          - arm_fa526
+          - arm_mpcore
+          - arm_xscale
+          - i386_pentium-mmx
+          - i386_pentium4
+          - mips64_octeonplus
+          - mips_24kc
+          - mips_4kec
+          - mips_mips32
+          - mipsel_24kc
+          - mipsel_24kc_24kf
+          - mipsel_74kc
+          - mipsel_mips32
+          - powerpc_464fp
+          - powerpc_8540
+          - x86_64
         sdk:
           - abi: snapshots/packages
-            version: snapshots
+            tag: snapshot
           - abi: releases/packages-21.02
-            version: releases/21.02.3
-        target:
-          - arch: aarch64_cortex-a53
-            sdk_target_url_path: bcm27xx/bcm2710
-          - arch: aarch64_cortex-a72
-            sdk_target_url_path: mvebu/cortexa72
-          - arch: aarch64_generic
-            sdk_target_url_path: layerscape/armv8_64b
-          - arch: arc_archs
-            sdk_target_url_path: archs38/generic
-          - arch: arm_arm1176jzf-s_vfp
-            sdk_target_url_path: bcm27xx/bcm2708
-          - arch: arm_arm926ej-s
-            sdk_target_url_path: mxs/generic
-          - arch: arm_cortex-a15_neon-vfpv4
-            sdk_target_url_path: ipq806x/generic
-          - arch: arm_cortex-a5_vfpv4
-            sdk_target_url_path: at91/sama5
-          - arch: arm_cortex-a7
-            sdk_target_url_path: mediatek/mt7629
-          - arch: arm_cortex-a7_neon-vfpv4
-            sdk_target_url_path: bcm27xx/bcm2709
-          - arch: arm_cortex-a8_vfpv3
-            sdk_target_url_path: sunxi/cortexa8
-          - arch: arm_cortex-a9
-            sdk_target_url_path: bcm53xx/generic
-          - arch: arm_cortex-a9_neon
-            sdk_target_url_path: zynq/generic
-          - arch: arm_cortex-a9_vfpv3-d16
-            sdk_target_url_path: mvebu/cortexa9
-          - arch: arm_fa526
-            sdk_target_url_path: gemini/generic
-          - arch: arm_mpcore
-            sdk_target_url_path: oxnas/ox820
-          - arch: arm_xscale
-            sdk_target_url_path: kirkwood/generic
-          - arch: i386_pentium-mmx
-            sdk_target_url_path: x86/legacy
-          - arch: i386_pentium4
-            sdk_target_url_path: x86/generic
-          - arch: mips64_octeonplus
-            sdk_target_url_path: octeon/generic
-          - arch: mips_24kc
-            sdk_target_url_path: ath79/generic
-          - arch: mips_mips32
-            sdk_target_url_path: bcm63xx/generic
-          - arch: mipsel_24kc
-            sdk_target_url_path: ramips/mt7620
-          - arch: mipsel_24kc_24kf
-            sdk_target_url_path: pistachio/generic
-          - arch: mipsel_74kc
-            sdk_target_url_path: bcm47xx/mips74k
-          - arch: mipsel_mips32
-            sdk_target_url_path: bcm47xx/generic
-          - arch: powerpc_464fp
-            sdk_target_url_path: apm821xx/nand
-          - arch: powerpc_8540
-            sdk_target_url_path: mpc85xx/p1010
-          - arch: x86_64
-            sdk_target_url_path: x86/64
-        include:
-          - sdk:
-              abi: snapshots/packages
-              version: snapshots
-            target:
-              arch: mips_4kec
-              sdk_target_url_path: realtek/rtl838x
-          - sdk:
-              abi: releases/packages-21.02
-              version: releases/21.02.3
-            target:
-              arch: mips_4kec
-              sdk_target_url_path: realtek/generic
+            tag: openwrt-21.02
 
-    env:
-      SDK_ABI: ${{ matrix.sdk.abi }}
-      SDK_VERSION: ${{ matrix.sdk.version }}
-      SDK_TARGET_URL_PATH: ${{ matrix.target.sdk_target_url_path }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Install Dependencies
+      - name: Retrieve Version
+        id: ver
         run: |
-          sudo apt-get update && \
-            sudo apt-get install -yq gettext libncurses5-dev xsltproc
+          IFS=- read luci_ver pkgs_ver <<< $(cat upstream_version)
+          echo "::set-output name=luci::$luci_ver"
+          echo "::set-output name=pkgs::$pkgs_ver"
 
-      - name: Prepare For Build
-        run: |
-          sdk_home="$(mktemp -d)"
-          echo "SDK_HOME=$sdk_home" >> $GITHUB_ENV
-
-      - name: Build package
+      - name: Build Package
+        uses: MoetaYuko/gh-action-sdk@master
         env:
-          SIGN_PRIV_KEY: ${{ secrets.SIGN_PRIV_KEY }}
-        run: ./compile.sh
+          ARCH: ${{ matrix.arch }}-${{ matrix.sdk.tag }}
+          EXTRA_FEEDS: >-
+            src-git|passwall_luci|https://github.com/xiaorouji/openwrt-passwall^${{ steps.ver.outputs.luci }}
+            src-git|passwall_packages|https://github.com/xiaorouji/openwrt-passwall^${{ steps.ver.outputs.pkgs }}
+          KEY_BUILD: ${{ secrets.SIGN_PRIV_KEY }}
+          V: s
 
       - name: Tar Output Folder
-        run: tar -cf dist.tar dist
+        run: |
+          DIST_DIR=$PWD/dist/${{ matrix.sdk.abi }}
+          mkdir -p $DIST_DIR
 
-      - name: Sanitize SDK Version
-        id: sanitize-sdk-version
-        run: echo "::set-output name=version::$(echo $SDK_ABI | sed 's/\//-/g')"
+          pushd bin/packages
+          cp -r --parents */passwall* $DIST_DIR
+          popd
+
+          tar -cf dist.tar dist
 
       - name: Upload Output Folder
         uses: actions/upload-artifact@v3
         with:
-          name: openwrt-passwall-${{ matrix.target.arch }}-${{ steps.sanitize-sdk-version.outputs.version }}
+          name: openwrt-passwall-${{ matrix.arch }}-${{ matrix.sdk.tag }}
           path: dist.tar
           retention-days: 7
 
