@@ -18,17 +18,16 @@ opkg-key add passwall.pub
 
 ```sh
 read release arch <<< $(. /etc/openwrt_release ; echo ${DISTRIB_RELEASE%.*} $DISTRIB_ARCH)
-cat << EOF >> /etc/opkg/customfeeds.conf
-src/gz passwall_luci https://mirrors.tuna.tsinghua.edu.cn/osdn/storage/g/o/op/openwrt-passwall-build/releases/packages-$release/$arch/passwall_luci
-src/gz passwall_packages https://mirrors.tuna.tsinghua.edu.cn/osdn/storage/g/o/op/openwrt-passwall-build/releases/packages-$release/$arch/passwall_packages
-EOF
+for feed in passwall_luci passwall_packages passwall2; do
+  echo "src/gz $feed https://mirrors.tuna.tsinghua.edu.cn/osdn/storage/g/o/op/openwrt-passwall-build/releases/packages-$release/$arch/$feed" >> /etc/opkg/customfeeds.conf
+done
 ```
 OR
 ```sh
-cat << EOF >> /etc/opkg/customfeeds.conf
-src/gz passwall_luci https://mirrors.tuna.tsinghua.edu.cn/osdn/storage/g/o/op/openwrt-passwall-build/snapshots/packages/$arch/passwall_luci
-src/gz passwall_packages https://mirrors.tuna.tsinghua.edu.cn/osdn/storage/g/o/op/openwrt-passwall-build/snapshots/packages/$arch/passwall_packages
-EOF
+read arch <<< $(. /etc/openwrt_release ; echo $DISTRIB_ARCH)
+for feed in passwall_luci passwall_packages passwall2; do
+  echo "src/gz $feed https://mirrors.tuna.tsinghua.edu.cn/osdn/storage/g/o/op/openwrt-passwall-build/snapshots/packages/$arch/$feed" >> /etc/opkg/customfeeds.conf
+done
 ```
 in case you use a snapshot build.
 
