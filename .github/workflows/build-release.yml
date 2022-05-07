@@ -63,9 +63,10 @@ jobs:
       - name: Retrieve Version
         id: ver
         run: |
-          IFS=- read luci_ver pkgs_ver <<< $(cat upstream_version)
+          { read luci_ver; read pkgs_ver; read passwall2_ver; } < current_version
           echo "::set-output name=luci::$luci_ver"
           echo "::set-output name=pkgs::$pkgs_ver"
+          echo "::set-output name=passwall2::$passwall2_ver"
 
       - name: Build Package
         uses: MoetaYuko/gh-action-sdk@master
@@ -74,6 +75,7 @@ jobs:
           EXTRA_FEEDS: >-
             src-git|passwall_luci|https://github.com/xiaorouji/openwrt-passwall^${{ steps.ver.outputs.luci }}
             src-git|passwall_packages|https://github.com/xiaorouji/openwrt-passwall^${{ steps.ver.outputs.pkgs }}
+            src-git|passwall2|https://github.com/xiaorouji/openwrt-passwall2^${{ steps.ver.outputs.passwall2 }}
           KEY_BUILD: ${{ secrets.SIGN_PRIV_KEY }}
           V: s
 

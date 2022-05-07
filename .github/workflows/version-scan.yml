@@ -29,41 +29,43 @@ jobs:
           ref: packages
           path: passwall_packages
 
-      - name: Get Latest Version
-        id: get_version
-        run: |
-          echo "::set-output name=version::$(printf "%s-%s" \
-            "$(git -C passwall_luci rev-parse HEAD)" \
-            "$(git -C passwall_packages rev-parse HEAD)")"
+      - name: Checkout Passwall2
+        uses: actions/checkout@v3
+        with:
+          repository: xiaorouji/openwrt-passwall2
+          path: passwall2
 
       - name: Compare Version
         id: compare_version
         run: |
-          latest_version="${{ steps.get_version.outputs.version }}"
-          current_version="$(cat upstream_version 2>/dev/null)" || true
+          printf -v upstream_version "%s\n%s\n%s" \
+            "$(git -C passwall_luci rev-parse HEAD)" \
+            "$(git -C passwall_packages rev-parse HEAD)" \
+            "$(git -C passwall2 rev-parse HEAD)"
 
-          if [ "$current_version" != "$latest_version" ] ; then
-            echo "::set-output name=version::$latest_version"
-          else
-            echo "::set-output name=version::"
-          fi
+          cmp -s <(echo "$upstream_version") current_version ||
+            echo "::set-output name=version::${upstream_version//$'\n'/'%0A'}"
 
       - name: Commit New Version
         if: steps.compare_version.outputs.version != ''
         run: |
           version="${{ steps.compare_version.outputs.version }}"
-          echo $version > upstream_version
-          git add upstream_version
+          echo "$version" > current_version
+          git add current_version
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          IFS=- read luci_ver pkgs_ver <<< $version
-          tag_name="${luci_ver:0:7}-${pkgs_ver:0:7}"
-          commit_url="xiaorouji/openwrt-passwall@%s"
+          { read luci_ver; read pkgs_ver; read passwall2_ver; } <<< $version
+          tag_name="${luci_ver:0:7}-${pkgs_ver:0:7}-${passwall2_ver:0:7}"
 
-          git commit -m "chore: bump to ${tag_name}" \
-            -m "$(printf "luci: ${commit_url}\npackages: ${commit_url}" ${luci_ver} ${pkgs_ver})"
+          git commit -F- << EOF
+          chore: bump to ${tag_name}
+
+          luci: xiaorouji/openwrt-passwall@${luci_ver}
+          packages: xiaorouji/openwrt-passwall@${pkgs_ver}
+          passwall2: xiaorouji/openwrt-passwall2@${passwall2_ver}
+          EOF
           git push
 
           git tag -a "$tag_name" -m "$tag_name"
