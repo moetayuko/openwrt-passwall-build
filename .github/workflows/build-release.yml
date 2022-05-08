@@ -23,6 +23,7 @@ jobs:
           - arm_cortex-a5_vfpv4
           - arm_cortex-a7
           - arm_cortex-a7_neon-vfpv4
+          - arm_cortex-a7_vfpv4
           - arm_cortex-a8_vfpv3
           - arm_cortex-a9
           - arm_cortex-a9_neon
@@ -55,6 +56,12 @@ jobs:
             sdk:
               abi: releases/packages-21.02
               tag: openwrt-21.02
+        exclude:
+          - { arch: arm_cortex-a7_vfpv4,
+              sdk: { abi: releases/packages-21.02, tag: openwrt-21.02 } }
+          # TODO: Remove once 22.03 docker image becomes available
+          - { arch: arm_cortex-a7_vfpv4,
+              sdk: { abi: releases/packages-22.03, tag: openwrt-22.03 } }
 
     steps:
       - name: Checkout
