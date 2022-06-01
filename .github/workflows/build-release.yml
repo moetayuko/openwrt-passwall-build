@@ -73,7 +73,7 @@ jobs:
           echo "::set-output name=passwall2::$passwall2_ver"
 
       - name: Build Package
-        uses: MoetaYuko/gh-action-sdk@master
+        uses: openwrt/gh-action-sdk@master
         env:
           ARCH: ${{ matrix.arch }}-${{ matrix.sdk.tag }}
           EXTRA_FEEDS: >-
