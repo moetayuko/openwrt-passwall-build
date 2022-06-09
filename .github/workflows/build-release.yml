@@ -72,8 +72,14 @@ jobs:
           echo "::set-output name=pkgs::$pkgs_ver"
           echo "::set-output name=passwall2::$passwall2_ver"
 
+      # Use go 1.18.3 for 21.02
+      - name: Override golang version
+        if: matrix.sdk.tag == 'openwrt-21.02'
+        run: |
+          echo "GOLANG_COMMIT=112cf0903125837bc7990813105cbe7ce23f5ece" >> $GITHUB_ENV
+
       - name: Build Package
-        uses: openwrt/gh-action-sdk@master
+        uses: MoetaYuko/gh-action-sdk@master
         env:
           ARCH: ${{ matrix.arch }}-${{ matrix.sdk.tag }}
           EXTRA_FEEDS: >-
