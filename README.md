@@ -10,7 +10,7 @@ Binary distribution of [xiaorouji/openwrt-passwall](https://github.com/xiaorouji
 1. Add new opkg key:
 
 ```sh
-wget https://mirrors.tuna.tsinghua.edu.cn/osdn/storage/g/o/op/openwrt-passwall-build/passwall.pub
+wget https://free.nchc.org.tw/osdn/storage/g/o/op/openwrt-passwall-build/passwall.pub
 opkg-key add passwall.pub
 ```
 
@@ -19,19 +19,19 @@ opkg-key add passwall.pub
 ```sh
 read release arch <<< $(. /etc/openwrt_release ; echo ${DISTRIB_RELEASE%.*} $DISTRIB_ARCH)
 for feed in passwall_luci passwall_packages passwall2; do
-  echo "src/gz $feed https://mirrors.tuna.tsinghua.edu.cn/osdn/storage/g/o/op/openwrt-passwall-build/releases/packages-$release/$arch/$feed" >> /etc/opkg/customfeeds.conf
+  echo "src/gz $feed https://free.nchc.org.tw/osdn/storage/g/o/op/openwrt-passwall-build/releases/packages-$release/$arch/$feed" >> /etc/opkg/customfeeds.conf
 done
 ```
 OR
 ```sh
 read arch <<< $(. /etc/openwrt_release ; echo $DISTRIB_ARCH)
 for feed in passwall_luci passwall_packages passwall2; do
-  echo "src/gz $feed https://mirrors.tuna.tsinghua.edu.cn/osdn/storage/g/o/op/openwrt-passwall-build/snapshots/packages/$arch/$feed" >> /etc/opkg/customfeeds.conf
+  echo "src/gz $feed https://free.nchc.org.tw/osdn/storage/g/o/op/openwrt-passwall-build/snapshots/packages/$arch/$feed" >> /etc/opkg/customfeeds.conf
 done
 ```
 in case you use a snapshot build.
 
-> TUNA's mirror might not be up-to-date, download from `https://osdn.net/projects/openwrt-passwall-build/storage/` whenever necessary.
+> NCHC's mirror might not be up-to-date, download from `https://osdn.net/projects/openwrt-passwall-build/storage/` whenever necessary.
 
 3. Install package:
 
