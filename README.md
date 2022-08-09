@@ -17,14 +17,18 @@ opkg-key add passwall.pub
 2. Add opkg repository:
 
 ```sh
-read release arch <<< $(. /etc/openwrt_release ; echo ${DISTRIB_RELEASE%.*} $DISTRIB_ARCH)
+read release arch << EOF
+$(. /etc/openwrt_release ; echo ${DISTRIB_RELEASE%.*} $DISTRIB_ARCH)
+EOF
 for feed in passwall_luci passwall_packages passwall2; do
   echo "src/gz $feed https://free.nchc.org.tw/osdn/storage/g/o/op/openwrt-passwall-build/releases/packages-$release/$arch/$feed" >> /etc/opkg/customfeeds.conf
 done
 ```
 OR
 ```sh
-read arch <<< $(. /etc/openwrt_release ; echo $DISTRIB_ARCH)
+read arch << EOF
+$(. /etc/openwrt_release ; echo $DISTRIB_ARCH)
+EOF
 for feed in passwall_luci passwall_packages passwall2; do
   echo "src/gz $feed https://free.nchc.org.tw/osdn/storage/g/o/op/openwrt-passwall-build/snapshots/packages/$arch/$feed" >> /etc/opkg/customfeeds.conf
 done
