@@ -59,6 +59,9 @@ jobs:
         exclude:
           - { arch: arm_cortex-a7_vfpv4,
               sdk: { abi: releases/packages-21.02, tag: openwrt-21.02 } }
+          # https://github.com/openwrt/packages/issues/19511
+          - { arch: mipsel_24kc_24kf,
+              sdk: { abi: snapshots/packages, tag: snapshot } }
 
     steps:
       - name: Checkout
