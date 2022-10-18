@@ -71,9 +71,9 @@ jobs:
         id: ver
         run: |
           { read luci_ver; read pkgs_ver; read passwall2_ver; } < current_version
-          echo "::set-output name=luci::$luci_ver"
-          echo "::set-output name=pkgs::$pkgs_ver"
-          echo "::set-output name=passwall2::$passwall2_ver"
+          echo "luci=$luci_ver" >> $GITHUB_OUTPUT
+          echo "pkgs=$pkgs_ver" >> $GITHUB_OUTPUT
+          echo "passwall2=$passwall2_ver" >> $GITHUB_OUTPUT
 
       # Use go 1.18.3 for 21.02
       - name: Override golang version

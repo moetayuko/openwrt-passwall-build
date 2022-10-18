@@ -44,19 +44,19 @@ jobs:
             "$(git -C passwall2 rev-parse HEAD)"
 
           cmp -s <(echo "$upstream_version") current_version ||
-            echo "::set-output name=version::${upstream_version//$'\n'/'%0A'}"
+            echo "version=${upstream_version//$'\n'/ }" >> $GITHUB_OUTPUT
 
       - name: Commit New Version
         if: steps.compare_version.outputs.version != ''
         run: |
           version="${{ steps.compare_version.outputs.version }}"
-          echo "$version" > current_version
+          echo -e "${version// /\\n}" > current_version
           git add current_version
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          { read luci_ver; read pkgs_ver; read passwall2_ver; } <<< $version
+          read -r luci_ver pkgs_ver passwall2_ver <<< $version
           tag_name="${luci_ver:0:7}-${pkgs_ver:0:7}-${passwall2_ver:0:7}"
 
           git commit -F- << EOF
