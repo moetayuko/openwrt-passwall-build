@@ -134,9 +134,11 @@ jobs:
           cp passwall.pub dist
 
       - name: Deploy
-        uses: Pendect/action-rsyncer@v1.1.0
-        env:
-          DEPLOY_KEY: ${{ secrets.OSDN_DEPLOY_KEY }}
+        uses: Burnett01/rsync-deployments@5.2.1
         with:
-          src: 'dist/'
-          dest: 'dianlujitao@storage.osdn.net:/storage/groups/o/op/openwrt-passwall-build/'
+          switches: -avz --delete
+          path: dist/
+          remote_path: /storage/groups/o/op/openwrt-passwall-build/
+          remote_host: storage.osdn.net
+          remote_user: ${{ secrets.OSDN_DEPLOY_USER }}
+          remote_key: ${{ secrets.OSDN_DEPLOY_KEY }}
