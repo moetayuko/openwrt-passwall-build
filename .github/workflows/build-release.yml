@@ -7,7 +7,7 @@ on:
 
 jobs:
   release:
-    name: Build for ${{ matrix.arch }}-${{ matrix.sdk.tag }}
+    name: Build for ${{ matrix.arch }}-${{ matrix.sdk }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -45,23 +45,18 @@ jobs:
           - powerpc_8540
           - x86_64
         sdk:
-          - abi: snapshots/packages
-            tag: snapshot
-          - abi: releases/packages-21.02
-            tag: openwrt-21.02
-          - abi: releases/packages-22.03
-            tag: openwrt-22.03
+          - snapshot
+          - openwrt-21.02
+          - openwrt-22.03
         include:
           - arch: arc_arc700
-            sdk:
-              abi: releases/packages-21.02
-              tag: openwrt-21.02
+            sdk: openwrt-21.02
         exclude:
-          - { arch: arm_cortex-a7_vfpv4,
-              sdk: { abi: releases/packages-21.02, tag: openwrt-21.02 } }
+          - arch: arm_cortex-a7_vfpv4
+            sdk: openwrt-21.02
           # https://github.com/openwrt/packages/issues/19511
-          - { arch: mipsel_24kc_24kf,
-              sdk: { abi: snapshots/packages, tag: snapshot } }
+          - arch: mipsel_24kc_24kf
+            sdk: snapshot
 
     steps:
       - name: Checkout
@@ -77,14 +72,14 @@ jobs:
 
       # Use go 1.18.3 for 21.02
       - name: Override golang version
-        if: matrix.sdk.tag == 'openwrt-21.02'
+        if: matrix.sdk == 'openwrt-21.02'
         run: |
           echo "GOLANG_COMMIT=112cf0903125837bc7990813105cbe7ce23f5ece" >> $GITHUB_ENV
 
       - name: Build Package
         uses: MoetaYuko/gh-action-sdk@master
         env:
-          ARCH: ${{ matrix.arch }}-${{ matrix.sdk.tag }}
+          ARCH: ${{ matrix.arch }}-${{ matrix.sdk }}
           EXTRA_FEEDS: >-
             src-git|passwall_luci|https://github.com/xiaorouji/openwrt-passwall^${{ steps.ver.outputs.luci }}
             src-git|passwall_packages|https://github.com/xiaorouji/openwrt-passwall^${{ steps.ver.outputs.pkgs }}
@@ -94,7 +89,15 @@ jobs:
 
       - name: Tar Output Folder
         run: |
-          DIST_DIR=$PWD/dist/${{ matrix.sdk.abi }}
+          sdk=${{ matrix.sdk }}
+          if [[ $sdk == *"openwrt"* ]]; then
+            # openwrt-22.03 -> releases/packages-22.03
+            abi=${sdk/openwrt/releases\/packages}
+          else
+            # snapshot -> snapshots/packages
+            abi=snapshots/packages
+          fi
+          DIST_DIR=$PWD/dist/$abi
           mkdir -p $DIST_DIR
 
           pushd bin/packages
@@ -106,7 +109,7 @@ jobs:
       - name: Upload Output Folder
         uses: actions/upload-artifact@v3
         with:
-          name: openwrt-passwall-${{ matrix.arch }}-${{ matrix.sdk.tag }}
+          name: openwrt-passwall-${{ matrix.arch }}-${{ matrix.sdk }}
           path: dist.tar
           retention-days: 7
 
