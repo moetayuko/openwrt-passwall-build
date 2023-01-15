@@ -42,7 +42,7 @@ jobs:
           - mipsel_74kc
           - mipsel_mips32
           - powerpc_464fp
-          - powerpc_8540
+          - powerpc_8548
           - x86_64
         sdk:
           - snapshot
@@ -51,9 +51,17 @@ jobs:
         include:
           - arch: arc_arc700
             sdk: openwrt-21.02
+          - arch: powerpc_8540
+            sdk: openwrt-21.02
+          - arch: powerpc_8540
+            sdk: openwrt-22.03
         exclude:
           - arch: arm_cortex-a7_vfpv4
             sdk: openwrt-21.02
+          - arch: powerpc_8548
+            sdk: openwrt-21.02
+          - arch: powerpc_8548
+            sdk: openwrt-22.03
           # https://github.com/openwrt/packages/issues/19511
           - arch: mipsel_24kc_24kf
             sdk: snapshot
