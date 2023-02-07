@@ -13,16 +13,12 @@ on:
         required: true
         default: snapshot
 
-      golang_commit:
-        description: 'Override golang version'
-        required: false
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Build package
-        uses: MoetaYuko/gh-action-sdk@master
+        uses: openwrt/gh-action-sdk@master
         env:
           ARCH: ${{ github.event.inputs.arch }}-${{ github.event.inputs.sdk_version }}
           EXTRA_FEEDS: >-
@@ -31,7 +27,6 @@ jobs:
             src-git|passwall2|https://github.com/xiaorouji/openwrt-passwall2;main
           KEY_BUILD: ${{ secrets.SIGN_PRIV_KEY }}
           V: s
-          GOLANG_COMMIT: ${{ github.event.inputs.golang_commit }}
 
       - name: Save Build Result
         uses: actions/upload-artifact@v3
