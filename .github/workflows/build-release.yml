@@ -45,24 +45,13 @@ jobs:
           - x86_64
         sdk:
           - snapshot
-          - openwrt-21.02
           - openwrt-22.03
         include:
-          - arch: arc_arc700
-            sdk: openwrt-21.02
-          - arch: arc_archs
-            sdk: openwrt-21.02
           - arch: arc_archs
             sdk: openwrt-22.03
-          - arch: powerpc_8540
-            sdk: openwrt-21.02
           - arch: powerpc_8540
             sdk: openwrt-22.03
         exclude:
-          - arch: arm_cortex-a7_vfpv4
-            sdk: openwrt-21.02
-          - arch: powerpc_8548
-            sdk: openwrt-21.02
           - arch: powerpc_8548
             sdk: openwrt-22.03
           # https://github.com/openwrt/packages/issues/19511
@@ -144,7 +133,7 @@ jobs:
       - name: Deploy
         uses: Burnett01/rsync-deployments@5.2.1
         with:
-          switches: -avz --delete
+          switches: -avz --delete --exclude-from=archived.txt
           path: dist/
           remote_path: /storage/groups/o/op/openwrt-passwall-build/
           remote_host: storage.osdn.net
