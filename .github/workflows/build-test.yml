@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Build package
-        uses: openwrt/gh-action-sdk@master
+        uses: openwrt/gh-action-sdk@main
         env:
           ARCH: ${{ github.event.inputs.arch }}-${{ github.event.inputs.sdk_version }}
           EXTRA_FEEDS: >-

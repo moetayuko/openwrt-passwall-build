@@ -71,7 +71,7 @@ jobs:
           echo "passwall2=$passwall2_ver" >> $GITHUB_OUTPUT
 
       - name: Build Package
-        uses: openwrt/gh-action-sdk@master
+        uses: openwrt/gh-action-sdk@main
         env:
           ARCH: ${{ matrix.arch }}-${{ matrix.sdk }}
           EXTRA_FEEDS: >-
