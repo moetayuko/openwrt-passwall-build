@@ -6,57 +6,85 @@ on:
       - "*"
 
 jobs:
-  release:
-    name: Build for ${{ matrix.arch }}-${{ matrix.sdk }}
+  generate_matrix:
+    name: Set matrix
     runs-on: ubuntu-latest
+    outputs:
+      sdks: ${{ steps.out.outputs.sdks }}
+    strategy:
+      matrix:
+        ref:
+          - master
+          - openwrt-22.03
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          repository: openwrt/openwrt
+          ref: ${{ matrix.ref }}
+
+      - name: Set targets
+        id: find_targets
+        run: |
+          REF=${{ matrix.ref }}
+
+          # sdks
+          JSON='['
+          FIRST=1
+
+          while read -r line;
+          do
+            ARCH=$(echo "$line" | cut -d " " -f 1)
+
+            [[ $FIRST -ne 1 ]] && JSON="$JSON"','
+            FIRST=0
+
+            JSON="$JSON"'{"arch":"'"$ARCH"'","ref":"'"$REF"'"}'
+          done <<< $(perl ./scripts/dump-target-info.pl architectures 2>/dev/null)
+
+          JSON="$JSON"']'
+          echo -e "\n---- sdks ----\n"
+          echo "$JSON"
+          echo -e "\n---- sdks ----\n"
+          echo "sdks=$JSON" >> "$GITHUB_OUTPUT"
+
+      - uses: cloudposse/github-action-matrix-outputs-write@main
+        id: out
+        with:
+          matrix-step-name: ${{ github.job }}
+          matrix-key: ${{ matrix.ref }}
+          outputs: |-
+            sdks: ${{ steps.find_targets.outputs.sdks }}
+
+  gather_matrix:
+    name: Gather build matrices
+    runs-on: ubuntu-latest
+    needs: generate_matrix
+    outputs:
+      result: ${{ steps.gather.outputs.result }}
+    steps:
+      - uses: cloudposse/github-action-matrix-outputs-read@main
+        id: read
+        with:
+          matrix-step-name: generate_matrix
+      - name: Gather matrices
+        id: gather
+        run: |
+          result=$(jq -c '.sdks[]' <<< '${{ steps.read.outputs.result }}' | jq -c -s add)
+          echo "result=${result}" >> $GITHUB_OUTPUT
+
+  release:
+    name: Build for ${{ matrix.arch }}-${{ matrix.ref }}
+    runs-on: ubuntu-latest
+    needs: gather_matrix
     strategy:
       fail-fast: false
       matrix:
-        arch:
-          - aarch64_cortex-a53
-          - aarch64_cortex-a72
-          - aarch64_generic
-          - arm_arm1176jzf-s_vfp
-          - arm_arm926ej-s
-          - arm_cortex-a15_neon-vfpv4
-          - arm_cortex-a5_vfpv4
-          - arm_cortex-a7
-          - arm_cortex-a7_neon-vfpv4
-          - arm_cortex-a7_vfpv4
-          - arm_cortex-a8_vfpv3
-          - arm_cortex-a9
-          - arm_cortex-a9_neon
-          - arm_cortex-a9_vfpv3-d16
-          - arm_fa526
-          - arm_mpcore
-          - arm_xscale
-          - i386_pentium-mmx
-          - i386_pentium4
-          - mips64_octeonplus
-          - mips_24kc
-          - mips_4kec
-          - mips_mips32
-          - mipsel_24kc
-          - mipsel_24kc_24kf
-          - mipsel_74kc
-          - mipsel_mips32
-          - powerpc_464fp
-          - powerpc_8548
-          - x86_64
-        sdk:
-          - master
-          - openwrt-22.03
-        include:
-          - arch: arc_archs
-            sdk: openwrt-22.03
-          - arch: powerpc_8540
-            sdk: openwrt-22.03
+        include: ${{ fromJson(needs.gather_matrix.outputs.result) }}
         exclude:
-          - arch: powerpc_8548
-            sdk: openwrt-22.03
           # https://github.com/openwrt/packages/issues/19511
           - arch: mipsel_24kc_24kf
-            sdk: master
+            ref: master
 
     steps:
       - name: Checkout
@@ -73,7 +101,7 @@ jobs:
       - name: Build Package
         uses: openwrt/gh-action-sdk@main
         env:
-          ARCH: ${{ matrix.arch }}-${{ matrix.sdk }}
+          ARCH: ${{ matrix.arch }}-${{ matrix.ref }}
           EXTRA_FEEDS: >-
             src-git|passwall_packages|https://github.com/xiaorouji/openwrt-passwall^${{ steps.ver.outputs.pkgs }}
             src-git|passwall_luci|https://github.com/xiaorouji/openwrt-passwall^${{ steps.ver.outputs.luci }}
@@ -83,10 +111,10 @@ jobs:
 
       - name: Tar Output Folder
         run: |
-          sdk=${{ matrix.sdk }}
-          if [[ $sdk == *"openwrt"* ]]; then
+          ref=${{ matrix.ref }}
+          if [[ $ref == *"openwrt"* ]]; then
             # openwrt-22.03 -> releases/packages-22.03
-            abi=${sdk/openwrt/releases\/packages}
+            abi=${ref/openwrt/releases\/packages}
           else
             # master -> snapshots/packages
             abi=snapshots/packages
@@ -103,7 +131,7 @@ jobs:
       - name: Upload Output Folder
         uses: actions/upload-artifact@v3
         with:
-          name: openwrt-passwall-${{ matrix.arch }}-${{ matrix.sdk }}
+          name: openwrt-passwall-${{ matrix.arch }}-${{ matrix.ref }}
           path: dist.tar
           retention-days: 7
 
@@ -124,7 +152,7 @@ jobs:
       - name: Merge All Builds
         run: |
           mkdir dist
-          for d in all-builds/*; do
+          for d in all-builds/openwrt-passwall-*; do
             tar -xf $d/dist.tar -C $d
             rsync -a $d/dist/ dist
           done
