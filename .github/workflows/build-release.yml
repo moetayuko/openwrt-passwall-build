@@ -44,7 +44,7 @@ jobs:
           - powerpc_8548
           - x86_64
         sdk:
-          - snapshot
+          - master
           - openwrt-22.03
         include:
           - arch: arc_archs
@@ -56,7 +56,7 @@ jobs:
             sdk: openwrt-22.03
           # https://github.com/openwrt/packages/issues/19511
           - arch: mipsel_24kc_24kf
-            sdk: snapshot
+            sdk: master
 
     steps:
       - name: Checkout
@@ -88,7 +88,7 @@ jobs:
             # openwrt-22.03 -> releases/packages-22.03
             abi=${sdk/openwrt/releases\/packages}
           else
-            # snapshot -> snapshots/packages
+            # master -> snapshots/packages
             abi=snapshots/packages
           fi
           DIST_DIR=$PWD/dist/$abi
