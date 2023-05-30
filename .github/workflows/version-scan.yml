@@ -2,7 +2,7 @@ name: Scan openwrt-passwall Version
 
 on:
   schedule:
-    - cron: "0 19 * * *" # every day at UTC+8 3:00AM
+    - cron: "0 18 * * *" # every day at UTC+8 2:00AM
   workflow_dispatch:
 
 jobs:
@@ -67,6 +67,3 @@ jobs:
           passwall2: xiaorouji/openwrt-passwall2@${passwall2_ver}
           EOF
           git push
-
-          git tag -a "$tag_name" -m "$tag_name"
-          git push origin "$tag_name"

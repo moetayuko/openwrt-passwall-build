@@ -1,9 +1,10 @@
 name: Build and Release
 
 on:
+  workflow_dispatch:
   push:
-    tags:
-      - "*"
+    paths:
+      - current_version
 
 jobs:
   generate_matrix:
