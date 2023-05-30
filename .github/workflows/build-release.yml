@@ -17,6 +17,7 @@ jobs:
         ref:
           - master
           - openwrt-22.03
+          - openwrt-23.05
     steps:
       - name: Checkout
         uses: actions/checkout@v3
