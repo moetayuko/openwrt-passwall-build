@@ -11,7 +11,7 @@ on:
       sdk_version:
         description: 'SDK version'
         required: true
-        default: snapshot
+        default: master
 
 jobs:
   build:
