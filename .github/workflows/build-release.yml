@@ -73,14 +73,6 @@ jobs:
         id: gather
         run: |
           result=$(jq -c '.sdks[]' <<< '${{ steps.read.outputs.result }}' | jq -c -s add)
-          # https://github.com/openwrt/packages/issues/19511
-          result=$(jq -c '. - [{
-            "arch": "mipsel_24kc_24kf",
-            "ref": "openwrt-23.05"
-          }, {
-            "arch": "mipsel_24kc_24kf",
-            "ref": "master"
-          }]' <<< ${result})
           echo "result=${result}" >> $GITHUB_OUTPUT
 
   release:
