@@ -113,11 +113,14 @@ jobs:
             # openwrt-22.03 -> releases/packages-22.03
             VERSION=${REF//openwrt-/}
             pkg=releases/packages-$VERSION
+            log=releases/faillogs-$VERSION
           else
             # master -> snapshots/packages
             pkg=snapshots/packages
+            log=snapshots/faillogs
           fi
           echo "pkg=$pkg" >> "$GITHUB_OUTPUT"
+          echo "log=$log" >> "$GITHUB_OUTPUT"
 
       - name: Retrieve Version
         id: ver
@@ -137,14 +140,26 @@ jobs:
             src-git|passwall2|https://github.com/xiaorouji/openwrt-passwall2^${{ steps.ver.outputs.passwall2 }}
           KEY_BUILD: ${{ secrets.SIGN_PRIV_KEY }}
           V: s
+          IGNORE_ERRORS: n m y
+          BUILD_LOG: 1
+
+      - name: Finding failure logs
+        working-directory: logs/package/feeds
+        run: |
+          sed -ne 's!^ *ERROR: package/feeds/\(passwall[^ ]*\) .*$!\1!p' ../error.txt | sort -u | xargs -r find > ../../../logs.txt
+          cat ../../../logs.txt
 
       - name: Prepare Output Folder
         run: |
           PKG_DIR=${{ steps.get_build_path.outputs.pkg }}/${{ matrix.arch }}
-          mkdir -p dist/$PKG_DIR
+          LOG_DIR=${{ steps.get_build_path.outputs.log }}/${{ matrix.arch }}
+          mkdir -p dist/$PKG_DIR dist/$LOG_DIR
+
           echo /$PKG_DIR/ > dist_files.txt
+          echo /$LOG_DIR/ >> dist_files.txt
 
           rsync -av bin/packages/${{ matrix.arch }}/passwall* dist/$PKG_DIR/
+          rsync -av --files-from=logs.txt logs/package/feeds/ dist/$LOG_DIR/
 
           tar -cf dist.tar dist
 
