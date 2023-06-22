@@ -7,6 +7,22 @@ on:
       - current_version
 
 jobs:
+  pubkey:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Upload public key
+        uses: Burnett01/rsync-deployments@6.0.0
+        with:
+          switches: -avz
+          path: passwall.pub
+          remote_path: /storage/groups/o/op/openwrt-passwall-build/
+          remote_host: storage.osdn.net
+          remote_user: ${{ secrets.OSDN_DEPLOY_USER }}
+          remote_key: ${{ secrets.OSDN_DEPLOY_KEY }}
+
   generate_matrix:
     name: Set matrix
     runs-on: ubuntu-latest
@@ -79,6 +95,7 @@ jobs:
     name: Build for ${{ matrix.arch }}-${{ matrix.ref }}
     runs-on: ubuntu-latest
     needs: gather_matrix
+    concurrency: build-${{ matrix.arch }}-${{ matrix.ref }}
     strategy:
       fail-fast: false
       matrix:
@@ -87,6 +104,20 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      - name: Get build path
+        id: get_build_path
+        run: |
+          REF=${{ matrix.ref }}
+          if [[ $REF == openwrt-* ]]; then
+            # openwrt-22.03 -> releases/packages-22.03
+            VERSION=${REF//openwrt-/}
+            pkg=releases/packages-$VERSION
+          else
+            # master -> snapshots/packages
+            pkg=snapshots/packages
+          fi
+          echo "pkg=$pkg" >> "$GITHUB_OUTPUT"
 
       - name: Retrieve Version
         id: ver
@@ -107,22 +138,13 @@ jobs:
           KEY_BUILD: ${{ secrets.SIGN_PRIV_KEY }}
           V: s
 
-      - name: Tar Output Folder
+      - name: Prepare Output Folder
         run: |
-          ref=${{ matrix.ref }}
-          if [[ $ref == *"openwrt"* ]]; then
-            # openwrt-22.03 -> releases/packages-22.03
-            abi=${ref/openwrt/releases\/packages}
-          else
-            # master -> snapshots/packages
-            abi=snapshots/packages
-          fi
-          DIST_DIR=$PWD/dist/$abi
-          mkdir -p $DIST_DIR
+          PKG_DIR=${{ steps.get_build_path.outputs.pkg }}/${{ matrix.arch }}
+          mkdir -p dist/$PKG_DIR
+          echo /$PKG_DIR/ > dist_files.txt
 
-          pushd bin/packages
-          cp -r --parents */passwall* $DIST_DIR
-          popd
+          rsync -av bin/packages/${{ matrix.arch }}/passwall* dist/$PKG_DIR/
 
           tar -cf dist.tar dist
 
@@ -133,33 +155,10 @@ jobs:
           path: dist.tar
           retention-days: 7
 
-  deploy:
-    concurrency:
-      group: deploy_osdn
-    runs-on: ubuntu-latest
-    needs: release
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Fetch All Builds
-        uses: actions/download-artifact@v3
+      - name: Uploading package files
+        uses: Burnett01/rsync-deployments@6.0.0
         with:
-          path: all-builds
-
-      - name: Merge All Builds
-        run: |
-          mkdir dist
-          for d in all-builds/openwrt-passwall-*; do
-            tar -xf $d/dist.tar -C $d
-            rsync -a $d/dist/ dist
-          done
-          cp passwall.pub dist
-
-      - name: Deploy
-        uses: Burnett01/rsync-deployments@5.2.1
-        with:
-          switches: -avz --delete --exclude-from=archived.txt
+          switches: -avzrm --delete --files-from=dist_files.txt
           path: dist/
           remote_path: /storage/groups/o/op/openwrt-passwall-build/
           remote_host: storage.osdn.net
