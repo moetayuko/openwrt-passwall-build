@@ -18,10 +18,10 @@ jobs:
         with:
           switches: -avz
           path: passwall.pub
-          remote_path: /storage/groups/o/op/openwrt-passwall-build/
-          remote_host: storage.osdn.net
-          remote_user: ${{ secrets.OSDN_DEPLOY_USER }}
-          remote_key: ${{ secrets.OSDN_DEPLOY_KEY }}
+          remote_path: /home/frs/project/openwrt-passwall-build/
+          remote_host: frs.sourceforge.net
+          remote_user: ${{ secrets.SF_DEPLOY_USER }}
+          remote_key: ${{ secrets.SF_DEPLOY_KEY }}
 
   generate_matrix:
     name: Set matrix
@@ -175,7 +175,7 @@ jobs:
         with:
           switches: -avzrm --delete --files-from=dist_files.txt
           path: dist/
-          remote_path: /storage/groups/o/op/openwrt-passwall-build/
-          remote_host: storage.osdn.net
-          remote_user: ${{ secrets.OSDN_DEPLOY_USER }}
-          remote_key: ${{ secrets.OSDN_DEPLOY_KEY }}
+          remote_path: /home/frs/project/openwrt-passwall-build/
+          remote_host: frs.sourceforge.net
+          remote_user: ${{ secrets.SF_DEPLOY_USER }}
+          remote_key: ${{ secrets.SF_DEPLOY_KEY }}
