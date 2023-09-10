@@ -171,7 +171,7 @@ jobs:
       - name: Uploading package files
         uses: Burnett01/rsync-deployments@6.0.0
         with:
-          switches: -avz --delete
+          switches: -avzc --delete
           path: dist/
           remote_path: /home/frs/project/openwrt-passwall-build/
           remote_host: frs.sourceforge.net
