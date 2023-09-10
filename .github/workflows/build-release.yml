@@ -141,13 +141,11 @@ jobs:
           rsync -av bin/packages/${{ matrix.arch }}/passwall* dist/$PKG_DIR/
           rsync -av --files-from=logs.txt logs/package/feeds/ dist/$LOG_DIR/
 
-          tar -cf dist.tar dist
-
       - name: Upload Output Folder
         uses: actions/upload-artifact@v3
         with:
           name: openwrt-passwall-${{ matrix.arch }}-${{ matrix.ref }}
-          path: dist.tar
+          path: dist/
           retention-days: 7
 
   deploy:
@@ -161,15 +159,12 @@ jobs:
 
       - name: Fetch All Builds
         uses: actions/download-artifact@v3
-        with:
-          path: all-builds
 
       - name: Merge All Builds
         run: |
           mkdir dist
-          for d in all-builds/openwrt-passwall-*; do
-            tar -xf $d/dist.tar -C $d
-            rsync -a $d/dist/ dist
+          for d in openwrt-passwall-*; do
+            mv $d/* dist
           done
           cp passwall.pub dist
 
