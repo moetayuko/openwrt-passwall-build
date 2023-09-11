@@ -11,7 +11,7 @@ on:
       sdk_version:
         description: 'SDK version'
         required: true
-        default: master
+        default: main
 
 jobs:
   build:
@@ -23,7 +23,7 @@ jobs:
           ARCH: ${{ github.event.inputs.arch }}-${{ github.event.inputs.sdk_version }}
           EXTRA_FEEDS: >-
             src-git|passwall_packages|https://github.com/xiaorouji/openwrt-passwall;packages
-            src-git|passwall_luci|https://github.com/xiaorouji/openwrt-passwall;luci
+            src-git|passwall_luci|https://github.com/xiaorouji/openwrt-passwall;luci-smartdns-dev
             src-git|passwall2|https://github.com/xiaorouji/openwrt-passwall2;main
           KEY_BUILD: ${{ secrets.SIGN_PRIV_KEY }}
           V: s

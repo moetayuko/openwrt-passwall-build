@@ -15,7 +15,7 @@ jobs:
     strategy:
       matrix:
         ref:
-          - master
+          - main
           - openwrt-22.03
           - openwrt-23.05
     steps:
