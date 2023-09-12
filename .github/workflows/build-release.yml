@@ -164,7 +164,7 @@ jobs:
         run: |
           mkdir dist
           for d in openwrt-passwall-*; do
-            mv $d/* dist
+            rsync -a $d/ dist
           done
           cp passwall.pub dist
 
