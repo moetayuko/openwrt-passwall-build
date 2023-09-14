@@ -25,8 +25,7 @@ jobs:
       - name: Checkout Upstream Packages
         uses: actions/checkout@v3
         with:
-          repository: xiaorouji/openwrt-passwall
-          ref: packages
+          repository: xiaorouji/openwrt-passwall-packages
           path: passwall_packages
 
       - name: Checkout Passwall2
@@ -63,7 +62,7 @@ jobs:
           chore: bump to ${tag_name}
 
           luci: xiaorouji/openwrt-passwall@${luci_ver}
-          packages: xiaorouji/openwrt-passwall@${pkgs_ver}
+          packages: xiaorouji/openwrt-passwall-packages@${pkgs_ver}
           passwall2: xiaorouji/openwrt-passwall2@${passwall2_ver}
           EOF
           git push
