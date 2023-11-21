@@ -113,11 +113,10 @@ jobs:
           echo "pkgs=$pkgs_ver" >> $GITHUB_OUTPUT
           echo "passwall2=$passwall2_ver" >> $GITHUB_OUTPUT
 
-      # Use go 1.21.1 for 22.03
+      # Use go from 23.05 for 22.03
       - name: Override golang version
         if: matrix.ref == 'openwrt-22.03'
-        run: |
-          echo "GOLANG_COMMIT=d9a999521ea3113f3c48b65d468917bf94f83821" >> $GITHUB_ENV
+        run: echo "GOLANG_COMMIT=openwrt-23.05" >> $GITHUB_ENV
 
       - name: Build Package
         uses: MoetaYuko/gh-action-sdk@master
