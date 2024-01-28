@@ -11,25 +11,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT }}
 
       - name: Checkout Upstream Luci
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: xiaorouji/openwrt-passwall
           ref: luci-smartdns-dev
           path: passwall_luci
 
       - name: Checkout Upstream Packages
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: xiaorouji/openwrt-passwall-packages
           path: passwall_packages
 
       - name: Checkout Passwall2
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: xiaorouji/openwrt-passwall2
           path: passwall2

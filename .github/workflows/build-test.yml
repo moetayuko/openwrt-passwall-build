@@ -29,7 +29,7 @@ jobs:
           V: s
 
       - name: Save Build Result
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: openwrt-passwall
           path: bin/packages/${{ github.event.inputs.arch }}/passwall*/*.ipk

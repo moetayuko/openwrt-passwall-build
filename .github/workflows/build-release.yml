@@ -20,7 +20,7 @@ jobs:
           - openwrt-23.05
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: openwrt/openwrt
           ref: ${{ matrix.ref }}
@@ -86,7 +86,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Get build path
         id: get_build_path
@@ -147,7 +147,7 @@ jobs:
           rsync -av --files-from=logs.txt logs/package/feeds/ dist/$LOG_DIR/
 
       - name: Upload Output Folder
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: openwrt-passwall-${{ matrix.arch }}-${{ matrix.ref }}
           path: dist/
@@ -160,10 +160,10 @@ jobs:
     needs: release
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Fetch All Builds
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
 
       - name: Merge All Builds
         run: |
