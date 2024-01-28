@@ -4,14 +4,18 @@ on:
   workflow_dispatch:
     inputs:
       arch:
-        description: 'Target architecture'
+        description: "Target architecture"
         required: true
         default: x86_64
 
       sdk_version:
-        description: 'SDK version'
+        description: "SDK version"
         required: true
         default: main
+
+      golang_commit:
+        description: "Golang version"
+        default: openwrt-23.05
 
 jobs:
   build:
@@ -27,6 +31,7 @@ jobs:
             src-git|passwall2|https://github.com/xiaorouji/openwrt-passwall2;main
           KEY_BUILD: ${{ secrets.SIGN_PRIV_KEY }}
           V: s
+          GOLANG_COMMIT: ${{ github.event.inputs.golang_commit }}
 
       - name: Save Build Result
         uses: actions/upload-artifact@v4
