@@ -16,6 +16,7 @@ jobs:
       matrix:
         ref:
           - main
+          - openwrt-21.02
           - openwrt-22.03
           - openwrt-23.05
     steps:
@@ -113,9 +114,9 @@ jobs:
           echo "pkgs=$pkgs_ver" >> $GITHUB_OUTPUT
           echo "passwall2=$passwall2_ver" >> $GITHUB_OUTPUT
 
-      # Use go from 23.05 for 22.03
+      # Use go from 23.05 for 21.02/22.03
       - name: Override golang version
-        if: matrix.ref == 'openwrt-22.03'
+        if: contains(fromJSON('["openwrt-21.02", "openwrt-22.03"]'), matrix.ref)
         run: echo "GOLANG_COMMIT=openwrt-23.05" >> $GITHUB_ENV
 
       - name: Build Package

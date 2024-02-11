@@ -52,17 +52,6 @@ opkg install luci-app-passwall
 opkg install luci-app-passwall*.ipk
 ```
 
-## Archived Builds
-
-Builds for the following releases are archived and no longer updated due to toolchain compatibility.
-
-<details><summary>OpenWrt 21.02</summary>
-
-* luci: https://github.com/xiaorouji/openwrt-passwall/commit/e2443e4f8adb235547193ad12f1dd22f9965e5fe
-* packages: https://github.com/xiaorouji/openwrt-passwall/commit/9812ea8cde0f1a64731d306769cace2e9011b187
-* passwall2: https://github.com/xiaorouji/openwrt-passwall2/commit/6969493ec406f2332466f8905ba8903c3178e131
-</details>
-
 ## Acknowledgement
 
 This project is heavily inspired by [kuoruan/openwrt-v2ray](https://github.com/kuoruan/openwrt-v2ray).
