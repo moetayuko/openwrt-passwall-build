@@ -21,6 +21,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@main
+        with:
+          swap-storage: false
+
       - name: Build package
         uses: openwrt/gh-action-sdk@main
         env:

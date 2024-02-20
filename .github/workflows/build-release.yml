@@ -86,6 +86,11 @@ jobs:
         include: ${{ fromJson(needs.gather_matrix.outputs.result) }}
 
     steps:
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@main
+        with:
+          swap-storage: false
+
       - name: Checkout
         uses: actions/checkout@v4
 
