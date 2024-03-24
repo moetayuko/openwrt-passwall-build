@@ -119,10 +119,10 @@ jobs:
           echo "pkgs=$pkgs_ver" >> $GITHUB_OUTPUT
           echo "passwall2=$passwall2_ver" >> $GITHUB_OUTPUT
 
-      # Use go from 23.05 for 21.02/22.03
+      # Use go from master for 21.02/22.03/23.05
       - name: Override golang version
-        if: contains(fromJSON('["openwrt-21.02", "openwrt-22.03"]'), matrix.ref)
-        run: echo "GOLANG_COMMIT=openwrt-23.05" >> $GITHUB_ENV
+        if: contains(fromJSON('["openwrt-21.02", "openwrt-22.03", "openwrt-23.05"]'), matrix.ref)
+        run: echo "GOLANG_COMMIT=master" >> $GITHUB_ENV
 
       - name: Build Package
         uses: MoetaYuko/gh-action-sdk@master

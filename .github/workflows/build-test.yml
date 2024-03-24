@@ -15,7 +15,7 @@ on:
 
       golang_commit:
         description: "Golang version"
-        default: openwrt-23.05
+        default: master
 
 jobs:
   build:
