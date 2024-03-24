@@ -27,7 +27,7 @@ jobs:
           swap-storage: false
 
       - name: Build package
-        uses: openwrt/gh-action-sdk@main
+        uses: MoetaYuko/gh-action-sdk@master
         env:
           ARCH: ${{ github.event.inputs.arch }}-${{ github.event.inputs.sdk_version }}
           EXTRA_FEEDS: >-
