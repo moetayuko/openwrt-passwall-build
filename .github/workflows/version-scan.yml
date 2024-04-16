@@ -18,6 +18,12 @@ jobs:
       - name: Install nvchecker
         run: pip3 install nvchecker
 
+      # https://github.com/pycurl/pycurl/issues/834
+      - name: Workaround pycurl wheel
+        run: |
+          sudo mkdir -p /etc/pki/tls/certs
+          sudo ln -s /etc/ssl/certs/ca-certificates.crt /etc/pki/tls/certs/ca-bundle.crt
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
