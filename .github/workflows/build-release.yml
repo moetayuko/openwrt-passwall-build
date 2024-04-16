@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - current_version
+      - cur_ver.json
 
 jobs:
   generate_matrix:
@@ -114,10 +114,9 @@ jobs:
       - name: Retrieve Version
         id: ver
         run: |
-          { read luci_ver; read pkgs_ver; read passwall2_ver; } < current_version
-          echo "luci=$luci_ver" >> $GITHUB_OUTPUT
-          echo "pkgs=$pkgs_ver" >> $GITHUB_OUTPUT
-          echo "passwall2=$passwall2_ver" >> $GITHUB_OUTPUT
+          echo "luci=$(jq -r .passwall cur_ver.json)" >> $GITHUB_OUTPUT
+          echo "passwall2=$(jq -r .passwall2 cur_ver.json)" >> $GITHUB_OUTPUT
+          echo "pkgs=$(jq -r .packages cur_ver.json)" >> $GITHUB_OUTPUT
 
       # Use go from master for 21.02/22.03/23.05
       - name: Override golang version
