@@ -33,11 +33,9 @@ jobs:
         id: compare_version
         run: |
           nvchecker -c nvchecker.toml
-          nvcmp -c nvchecker.toml --exit-status && exit || echo "ret=$?" >> $GITHUB_OUTPUT
+          vers=$(nvcmp -c nvchecker.toml --exit-status -aj) && exit || echo "ret=$?" >> $GITHUB_OUTPUT
           nvtake -c nvchecker.toml --all
-          echo "passwall=$(jq -r .passwall new_ver.json)" >> $GITHUB_OUTPUT
-          echo "passwall2=$(jq -r .passwall2 new_ver.json)" >> $GITHUB_OUTPUT
-          echo "packages=$(jq -r .packages new_ver.json)" >> $GITHUB_OUTPUT
+          jq -cr 'map("\(.name)=\(.newver)") | .[]' <<< $vers >> $GITHUB_OUTPUT
 
       - name: Commit new version
         if: steps.compare_version.outputs.ret == 4

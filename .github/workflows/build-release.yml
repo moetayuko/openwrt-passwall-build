@@ -91,6 +91,14 @@ jobs:
         with:
           swap-storage: false
 
+      - name: Setup Python 3
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install nvchecker
+        run: pip3 install nvchecker
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -114,9 +122,9 @@ jobs:
       - name: Retrieve Version
         id: ver
         run: |
-          echo "luci=$(jq -r .passwall cur_ver.json)" >> $GITHUB_OUTPUT
-          echo "passwall2=$(jq -r .passwall2 cur_ver.json)" >> $GITHUB_OUTPUT
-          echo "pkgs=$(jq -r .packages cur_ver.json)" >> $GITHUB_OUTPUT
+          cp cur_ver.json new_ver.json
+          vers=$(nvcmp -c nvchecker.toml -aj)
+          jq -cr 'map("\(.name)=\(.newver)") | .[]' <<< $vers >> $GITHUB_OUTPUT
 
       # Use go from master for 21.02/22.03/23.05
       - name: Override golang version
@@ -128,8 +136,8 @@ jobs:
         env:
           ARCH: ${{ matrix.arch }}-${{ matrix.ref }}
           EXTRA_FEEDS: >-
-            src-git|passwall_packages|https://github.com/xiaorouji/openwrt-passwall-packages^${{ steps.ver.outputs.pkgs }}
-            src-git|passwall_luci|https://github.com/xiaorouji/openwrt-passwall^${{ steps.ver.outputs.luci }}
+            src-git|passwall_packages|https://github.com/xiaorouji/openwrt-passwall-packages^${{ steps.ver.outputs.packages }}
+            src-git|passwall_luci|https://github.com/xiaorouji/openwrt-passwall^${{ steps.ver.outputs.passwall }}
             src-git|passwall2|https://github.com/xiaorouji/openwrt-passwall2^${{ steps.ver.outputs.passwall2 }}
           KEY_BUILD: ${{ secrets.SIGN_PRIV_KEY }}
           V: s
