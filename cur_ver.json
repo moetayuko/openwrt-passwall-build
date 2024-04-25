@@ -6,9 +6,9 @@
       "revision": "37857e76c065124f54b514a31432b7792446299d"
     },
     "passwall": {
-      "version": "ad1b6663d929bd6bca3ef69a19b002e1f84d329a",
+      "version": "c27fbda9b5ef7dc15f34fd558d5c4d76d378891e",
       "gitref": "refs/heads/luci-smartdns-dev",
-      "revision": "ad1b6663d929bd6bca3ef69a19b002e1f84d329a"
+      "revision": "c27fbda9b5ef7dc15f34fd558d5c4d76d378891e"
     },
     "passwall2": {
       "version": "3d4101efee5f9f8d45f4f0e2bcaf3c858f4f2654",
