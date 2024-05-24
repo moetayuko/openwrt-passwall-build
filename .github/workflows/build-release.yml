@@ -74,8 +74,6 @@ jobs:
         id: gather
         run: |
           result=$(jq -c '.sdks[]' <<< '${{ steps.read.outputs.result }}' | jq -c -s add)
-          # https://github.com/openwrt/docker/issues/135
-          result=$(jq -c '[., inputs | .[] | select(.arch != "loongarch64_generic")]' <<< ${result})
           echo "result=${result}" >> $GITHUB_OUTPUT
 
   release:
