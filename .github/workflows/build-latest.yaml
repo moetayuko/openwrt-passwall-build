@@ -1,0 +1,194 @@
+name: Build and Release latest
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - cur_ver.json
+
+jobs:
+  generate_matrix:
+    name: Set matrix
+    runs-on: ubuntu-latest
+    outputs:
+      sdks: ${{ steps.out.outputs.sdks }}
+    strategy:
+      matrix:
+        ref:
+          - main
+          - openwrt-23.05
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: openwrt/openwrt
+          ref: ${{ matrix.ref }}
+
+      - name: Set targets
+        id: find_targets
+        run: |
+          REF=${{ matrix.ref }}
+
+          # sdks
+          JSON='['
+          FIRST=1
+
+          while read -r line;
+          do
+            ARCH=$(echo "$line" | cut -d " " -f 1)
+
+            [[ $FIRST -ne 1 ]] && JSON="$JSON"','
+            FIRST=0
+
+            JSON="$JSON"'{"arch":"'"$ARCH"'","ref":"'"$REF"'"}'
+          done <<< $(perl ./scripts/dump-target-info.pl architectures 2>/dev/null)
+
+          JSON="$JSON"']'
+          echo -e "\n---- sdks ----\n"
+          echo "$JSON"
+          echo -e "\n---- sdks ----\n"
+          echo "sdks=$JSON" >> "$GITHUB_OUTPUT"
+
+      - uses: cloudposse/github-action-matrix-outputs-write@main
+        id: out
+        with:
+          matrix-step-name: ${{ github.job }}
+          matrix-key: ${{ matrix.ref }}
+          outputs: |-
+            sdks: ${{ steps.find_targets.outputs.sdks }}
+
+  gather_matrix:
+    name: Gather build matrices
+    runs-on: ubuntu-latest
+    needs: generate_matrix
+    outputs:
+      result: ${{ steps.gather.outputs.result }}
+    steps:
+      - uses: cloudposse/github-action-matrix-outputs-read@main
+        id: read
+        with:
+          matrix-step-name: generate_matrix
+      - name: Gather matrices
+        id: gather
+        run: |
+          result=$(jq -c '.sdks[]' <<< '${{ steps.read.outputs.result }}' | jq -c -s add)
+          echo "result=${result}" >> $GITHUB_OUTPUT
+
+  release:
+    name: Build for ${{ matrix.arch }}-${{ matrix.ref }}
+    runs-on: ubuntu-latest
+    needs: gather_matrix
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJson(needs.gather_matrix.outputs.result) }}
+
+    steps:
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@main
+        with:
+          swap-storage: false
+
+      - name: Setup Python 3
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install nvchecker
+        run: pip3 install nvchecker
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get build path
+        id: get_build_path
+        run: |
+          REF=${{ matrix.ref }}
+          if [[ $REF == openwrt-* ]]; then
+            # openwrt-22.03 -> releases/packages-22.03
+            VERSION=${REF//openwrt-/}
+            pkg=releases/packages-$VERSION
+            log=releases/faillogs-$VERSION
+          else
+            # master -> snapshots/packages
+            pkg=snapshots/packages
+            log=snapshots/faillogs
+          fi
+          echo "pkg=$pkg" >> "$GITHUB_OUTPUT"
+          echo "log=$log" >> "$GITHUB_OUTPUT"
+
+      - name: Retrieve Version
+        id: ver
+        run: |
+          cp cur_ver.json new_ver.json
+          vers=$(nvcmp -c nvchecker.toml -aj)
+          jq -cr 'map("\(.name)=\(.newver)") | .[]' <<< $vers >> $GITHUB_OUTPUT
+
+      # Use go from master for 21.02/22.03/23.05
+      - name: Override golang version
+        if: contains(fromJSON('["openwrt-21.02", "openwrt-22.03", "openwrt-23.05"]'), matrix.ref)
+        run: echo "GOLANG_COMMIT=master" >> $GITHUB_ENV
+
+      - name: Build Package
+        uses: MoetaYuko/gh-action-sdk@master
+        env:
+          ARCH: ${{ matrix.arch }}-${{ matrix.ref }}
+          EXTRA_FEEDS: >-
+            src-git|passwall_packages|https://github.com/xiaorouji/openwrt-passwall-packages^${{ steps.ver.outputs.packages }}
+            src-git|passwall_luci|https://github.com/xiaorouji/openwrt-passwall^${{ steps.ver.outputs.passwall }}
+            src-git|passwall2|https://github.com/xiaorouji/openwrt-passwall2^${{ steps.ver.outputs.passwall2 }}
+          KEY_BUILD: ${{ secrets.SIGN_PRIV_KEY }}
+          V: s
+          IGNORE_ERRORS: n m y
+          BUILD_LOG: 1
+
+      - name: Finding failure logs
+        working-directory: logs/package/feeds
+        run: |
+          sed -ne 's!^ *ERROR: package/feeds/\(passwall[^ ]*\) .*$!\1!p' ../error.txt | sort -u | xargs -r find > ../../../logs.txt
+          cat ../../../logs.txt
+
+      - name: Prepare Output Folder
+        run: |
+          PKG_DIR=${{ steps.get_build_path.outputs.pkg }}/${{ matrix.arch }}
+          LOG_DIR=${{ steps.get_build_path.outputs.log }}/${{ matrix.arch }}
+          mkdir -p dist/$PKG_DIR dist/$LOG_DIR
+
+          rsync -av bin/packages/${{ matrix.arch }}/passwall* dist/$PKG_DIR/
+          rsync -av --files-from=logs.txt logs/package/feeds/ dist/$LOG_DIR/
+
+      - name: Upload Output Folder
+        uses: actions/upload-artifact@v4
+        with:
+          name: openwrt-passwall-${{ matrix.arch }}-${{ matrix.ref }}
+          path: dist/
+          retention-days: 7
+
+  deploy:
+    concurrency:
+      group: deploy
+    runs-on: ubuntu-latest
+    needs: release
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Fetch All Builds
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          pattern: openwrt-passwall-*
+          merge-multiple: true
+
+      - name: Add public key
+        run: cp passwall.pub dist/
+
+      - name: Uploading package files
+        uses: Burnett01/rsync-deployments@6.0.0
+        with:
+          switches: -rvzc --delete
+          path: dist/
+          remote_path: /home/frs/project/openwrt-passwall-build/
+          remote_host: frs.sourceforge.net
+          remote_user: ${{ secrets.SF_DEPLOY_USER }}
+          remote_key: ${{ secrets.SF_DEPLOY_KEY }}
