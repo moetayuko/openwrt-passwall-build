@@ -190,11 +190,17 @@ jobs:
         run: cp passwall.pub dist/
 
       - name: Uploading package files
-        uses: Burnett01/rsync-deployments@6.0.0
+        uses: appleboy/scp-action@v0.1.7
         with:
-          switches: -rvzc --delete
-          path: dist/
-          remote_path: /home/frs/project/openwrt-passwall-build/
-          remote_host: frs.sourceforge.net
-          remote_user: ${{ secrets.SF_DEPLOY_USER }}
-          remote_key: ${{ secrets.SF_DEPLOY_KEY }}
+          #switches: -rvzc --delete
+          #path: dist/
+          #remote_path: /home/frs/project/openwrt-passwall-build/
+          #remote_host: frs.sourceforge.net
+          #remote_user: ${{ secrets.SF_DEPLOY_USER }}
+          #remote_key: ${{ secrets.SF_DEPLOY_KEY }}
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          source: "dist/*"
+          target: "~/"
