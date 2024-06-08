@@ -192,15 +192,9 @@ jobs:
       - name: Uploading package files
         uses: appleboy/scp-action@v0.1.7
         with:
-          #switches: -rvzc --delete
-          #path: dist/
-          #remote_path: /home/frs/project/openwrt-passwall-build/
-          #remote_host: frs.sourceforge.net
-          #remote_user: ${{ secrets.SF_DEPLOY_USER }}
-          #remote_key: ${{ secrets.SF_DEPLOY_KEY }}
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
-          port: ${{ secrets.PORT }}
+          host: ${{ secrets.SFTP_HOST }}
+          username: ${{ secrets.SFTP_USERNAME }}
+          password: ${{ secrets.SFTP_PASSWORD }}
+          port: ${{ secrets.SFTP_PORT }}
           source: "dist/*"
           target: "~/"
