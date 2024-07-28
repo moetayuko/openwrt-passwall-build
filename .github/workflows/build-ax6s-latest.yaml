@@ -39,7 +39,7 @@ jobs:
             #[[ $FIRST -ne 1 ]] && JSON="$JSON"','
             #FIRST=0
             #JSON="$JSON"'{"arch":"'"$ARCH"'","ref":"'"$REF"'"}'
-            # Check if the architecture is aarch64_cortex-a53
+            # Check if the architecture is aarch64_cortex-a53 or mipsel_24kc
             #if [[ $ARCH == "aarch64_cortex-a53" ]]; then
             if [[ $ARCH == "aarch64_cortex-a53" || $ARCH == "mipsel_24kc" ]]; then
               [[ $FIRST -ne 1 ]] && JSON="$JSON"','
