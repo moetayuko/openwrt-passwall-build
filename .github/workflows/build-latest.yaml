@@ -1,4 +1,4 @@
-name: Build and Release latest
+name: Build and Release AX6S latest
 
 on:
   workflow_dispatch:
@@ -15,7 +15,6 @@ jobs:
     strategy:
       matrix:
         ref:
-          - main
           - openwrt-23.05
     steps:
       - name: Checkout
@@ -37,10 +36,18 @@ jobs:
           do
             ARCH=$(echo "$line" | cut -d " " -f 1)
 
-            [[ $FIRST -ne 1 ]] && JSON="$JSON"','
-            FIRST=0
+            #[[ $FIRST -ne 1 ]] && JSON="$JSON"','
+            #FIRST=0
+            #JSON="$JSON"'{"arch":"'"$ARCH"'","ref":"'"$REF"'"}'
+            # Check if the architecture is aarch64_cortex-a53 or mipsel_24kc
+            #ARCH_LIST=("aarch64_cortex-a53" "mipsel_24kc" "X86_64")
+            #if [[ $ARCH == "aarch64_cortex-a53" ]]; then
+            if [[ $ARCH == "aarch64_cortex-a53" || $ARCH == "mipsel_24kc"  || $ARCH == "X86_64" ]]; then
+              [[ $FIRST -ne 1 ]] && JSON="$JSON"','
+              FIRST=0
 
-            JSON="$JSON"'{"arch":"'"$ARCH"'","ref":"'"$REF"'"}'
+              JSON="$JSON"'{"arch":"'"$ARCH"'","ref":"'"$REF"'"}'
+            fi
           done <<< $(perl ./scripts/dump-target-info.pl architectures 2>/dev/null)
 
           JSON="$JSON"']'
@@ -184,11 +191,11 @@ jobs:
         run: cp passwall.pub dist/
 
       - name: Uploading package files
-        uses: Burnett01/rsync-deployments@6.0.0
+        uses: appleboy/scp-action@v0.1.7
         with:
-          switches: -rvzc --delete
-          path: dist/
-          remote_path: /home/frs/project/openwrt-passwall-build/
-          remote_host: frs.sourceforge.net
-          remote_user: ${{ secrets.SF_DEPLOY_USER }}
-          remote_key: ${{ secrets.SF_DEPLOY_KEY }}
+          host: ${{ secrets.SFTP_HOST }}
+          username: ${{ secrets.SFTP_USERNAME }}
+          password: ${{ secrets.SFTP_PASSWORD }}
+          port: ${{ secrets.SFTP_PORT }}
+          source: "dist/*"
+          target: "~/"
