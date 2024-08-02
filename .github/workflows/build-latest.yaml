@@ -1,4 +1,4 @@
-name: Build and Release AX6S latest
+name: Build and Release latest
 
 on:
   workflow_dispatch:
