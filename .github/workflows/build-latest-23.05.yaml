@@ -32,7 +32,7 @@ jobs:
           JSON='['
           FIRST=1
 
-          ARCH_LIST=("aarch64_cortex-a53" "mipsel_24kc" "X86_64" "aarch64_generic")
+          ARCH_LIST=("aarch64_cortex-a53" "mipsel_24kc" "x86_64" "aarch64_generic")
           while read -r line;
           do
             ARCH=$(echo "$line" | cut -d " " -f 1)
