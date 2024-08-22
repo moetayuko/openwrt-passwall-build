@@ -1,4 +1,4 @@
-name: Build and Release AX6S latest
+name: Build and Release 23.05
 
 on:
   workflow_dispatch:
@@ -32,6 +32,7 @@ jobs:
           JSON='['
           FIRST=1
 
+          ARCH_LIST=("aarch64_cortex-a53" "mipsel_24kc" "X86_64" "aarch64_generic")
           while read -r line;
           do
             ARCH=$(echo "$line" | cut -d " " -f 1)
@@ -39,10 +40,9 @@ jobs:
             #[[ $FIRST -ne 1 ]] && JSON="$JSON"','
             #FIRST=0
             #JSON="$JSON"'{"arch":"'"$ARCH"'","ref":"'"$REF"'"}'
-            # Check if the architecture is aarch64_cortex-a53 or mipsel_24kc
-            #ARCH_LIST=("aarch64_cortex-a53" "mipsel_24kc" "X86/64")
-            #if [[ $ARCH == "aarch64_cortex-a53" ]]; then
-            if [[ $ARCH == "aarch64_cortex-a53" || $ARCH == "mipsel_24kc"  || $ARCH == "X86/64" ]]; then
+            # Check if the architecture is in arch_list
+            
+            if [[ " ${ARCH_LIST[@]} " =~ " ${ARCH} " ]]; then
               [[ $FIRST -ne 1 ]] && JSON="$JSON"','
               FIRST=0
 
