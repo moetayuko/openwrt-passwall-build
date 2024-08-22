@@ -42,7 +42,7 @@ jobs:
             # Check if the architecture is aarch64_cortex-a53 or mipsel_24kc
             #ARCH_LIST=("aarch64_cortex-a53" "mipsel_24kc" "X86_64")
             #if [[ $ARCH == "aarch64_cortex-a53" ]]; then
-            if [[ $ARCH == "aarch64_cortex-a53" || $ARCH == "mipsel_24kc"  || $ARCH == "x86_64" ]]; then
+            if [[ $ARCH == "aarch64_cortex-a53" || $ARCH == "mipsel_24kc"  || $ARCH == "x86_64"   || $ARCH == "aarch64_generic" ]]; then
               [[ $FIRST -ne 1 ]] && JSON="$JSON"','
               FIRST=0
 
