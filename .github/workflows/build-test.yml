@@ -4,37 +4,42 @@ on:
   workflow_dispatch:
     inputs:
       arch:
-        description: 'Target architecture'
+        description: "Target architecture"
         required: true
         default: x86_64
 
       sdk_version:
-        description: 'SDK version'
+        description: "SDK version"
         required: true
-        default: snapshot
+        default: main
 
       golang_commit:
-        description: 'Override golang version'
-        required: false
+        description: "Golang version"
+        default: master
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@main
+        with:
+          swap-storage: false
+
       - name: Build package
         uses: MoetaYuko/gh-action-sdk@master
         env:
           ARCH: ${{ github.event.inputs.arch }}-${{ github.event.inputs.sdk_version }}
           EXTRA_FEEDS: >-
-            src-git|passwall_luci|https://github.com/xiaorouji/openwrt-passwall;luci
-            src-git|passwall_packages|https://github.com/xiaorouji/openwrt-passwall;packages
+            src-git|passwall_packages|https://github.com/xiaorouji/openwrt-passwall-packages;main
+            src-git|passwall_luci|https://github.com/xiaorouji/openwrt-passwall;luci-smartdns-dev
             src-git|passwall2|https://github.com/xiaorouji/openwrt-passwall2;main
           KEY_BUILD: ${{ secrets.SIGN_PRIV_KEY }}
           V: s
           GOLANG_COMMIT: ${{ github.event.inputs.golang_commit }}
 
       - name: Save Build Result
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: openwrt-passwall
           path: bin/packages/${{ github.event.inputs.arch }}/passwall*/*.ipk

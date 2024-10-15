@@ -2,7 +2,7 @@ name: Scan openwrt-passwall Version
 
 on:
   schedule:
-    - cron: "0 19 * * *" # every day at UTC+8 3:00AM
+    - cron: "0 18 * * *" # every day at UTC+8 2:00AM
   workflow_dispatch:
 
 jobs:
@@ -10,63 +10,34 @@ jobs:
     name: Check Version
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
+      - name: Setup Python 3
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install nvchecker
+        run: pip3 install nvchecker
+
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.PAT }}
 
-      - name: Checkout Upstream Luci
-        uses: actions/checkout@v3
-        with:
-          repository: xiaorouji/openwrt-passwall
-          ref: luci
-          path: passwall_luci
-
-      - name: Checkout Upstream Packages
-        uses: actions/checkout@v3
-        with:
-          repository: xiaorouji/openwrt-passwall
-          ref: packages
-          path: passwall_packages
-
-      - name: Checkout Passwall2
-        uses: actions/checkout@v3
-        with:
-          repository: xiaorouji/openwrt-passwall2
-          path: passwall2
-
-      - name: Compare Version
+      - name: Compare version
         id: compare_version
         run: |
-          printf -v upstream_version "%s\n%s\n%s" \
-            "$(git -C passwall_luci rev-parse HEAD)" \
-            "$(git -C passwall_packages rev-parse HEAD)" \
-            "$(git -C passwall2 rev-parse HEAD)"
+          nvchecker -c nvchecker.toml
+          vers=$(nvcmp -c nvchecker.toml --exit-status -aj) && exit || echo "ret=$?" >> $GITHUB_OUTPUT
+          nvtake -c nvchecker.toml --all
+          jq -cr 'map("\(.name)=\(.newver)") | .[]' <<< $vers >> $GITHUB_OUTPUT
 
-          cmp -s <(echo "$upstream_version") current_version ||
-            echo "version=${upstream_version//$'\n'/ }" >> $GITHUB_OUTPUT
+      - name: Commit new version
+        if: steps.compare_version.outputs.ret == 4
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: |
+            chore: bump version
 
-      - name: Commit New Version
-        if: steps.compare_version.outputs.version != ''
-        run: |
-          version="${{ steps.compare_version.outputs.version }}"
-          echo -e "${version// /\\n}" > current_version
-          git add current_version
-
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          read -r luci_ver pkgs_ver passwall2_ver <<< $version
-          tag_name="${luci_ver:0:7}-${pkgs_ver:0:7}-${passwall2_ver:0:7}"
-
-          git commit -F- << EOF
-          chore: bump to ${tag_name}
-
-          luci: xiaorouji/openwrt-passwall@${luci_ver}
-          packages: xiaorouji/openwrt-passwall@${pkgs_ver}
-          passwall2: xiaorouji/openwrt-passwall2@${passwall2_ver}
-          EOF
-          git push
-
-          git tag -a "$tag_name" -m "$tag_name"
-          git push origin "$tag_name"
+            passwall: xiaorouji/openwrt-passwall@${{ steps.compare_version.outputs.passwall }}
+            passwall2: xiaorouji/openwrt-passwall2@${{ steps.compare_version.outputs.passwall2 }}
+            packages: xiaorouji/openwrt-passwall-packages@${{ steps.compare_version.outputs.packages }}

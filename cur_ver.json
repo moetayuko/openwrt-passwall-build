@@ -2,17 +2,17 @@
   "version": 2,
   "data": {
     "packages": {
-      "version": "bd586251339aeb9393c17b68323957858c252083",
-      "revision": "bd586251339aeb9393c17b68323957858c252083"
+      "version": "0c50094146748f48a5a8b0f06d09e0b396fb4b67",
+      "revision": "0c50094146748f48a5a8b0f06d09e0b396fb4b67"
     },
     "passwall": {
-      "version": "1e13f516e816e27a4213654b3d3590e530063abb",
+      "version": "b4a8618da1c072dad48377f54b6602831c4ae954",
       "gitref": "refs/heads/luci-smartdns-dev",
-      "revision": "1e13f516e816e27a4213654b3d3590e530063abb"
+      "revision": "b4a8618da1c072dad48377f54b6602831c4ae954"
     },
     "passwall2": {
-      "version": "6ba43389f626a7ead0a3f80c2d1187b56f4a4363",
-      "revision": "6ba43389f626a7ead0a3f80c2d1187b56f4a4363"
+      "version": "40f53ea572cb8b4a78de0e7dd85d312908a4dbed",
+      "revision": "40f53ea572cb8b4a78de0e7dd85d312908a4dbed"
     }
   }
 }
