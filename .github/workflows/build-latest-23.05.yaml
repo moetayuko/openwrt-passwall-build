@@ -15,6 +15,7 @@ jobs:
     strategy:
       matrix:
         ref:
+          - openwrt-21.02
           - openwrt-23.05
     steps:
       - name: Checkout
