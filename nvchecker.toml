@@ -6,7 +6,6 @@ newver = "new_ver.json"
 source = "git"
 git = "https://github.com/xiaorouji/openwrt-passwall"
 use_commit = true
-branch = "luci-smartdns-dev"
 
 [passwall2]
 source = "git"
