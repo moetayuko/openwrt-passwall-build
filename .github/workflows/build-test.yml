@@ -27,7 +27,7 @@ jobs:
           swap-storage: false
 
       - name: Build package
-        uses: MoetaYuko/gh-action-sdk@master
+        uses: moetayuko/gh-action-sdk@main
         env:
           ARCH: ${{ github.event.inputs.arch }}-${{ github.event.inputs.sdk_version }}
           EXTRA_FEEDS: >-
@@ -42,5 +42,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: openwrt-passwall
-          path: bin/packages/${{ github.event.inputs.arch }}/passwall*/*.ipk
+          path: bin/packages/${{ github.event.inputs.arch }}/passwall*/*
           retention-days: 7

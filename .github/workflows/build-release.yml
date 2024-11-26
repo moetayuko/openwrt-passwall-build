@@ -19,6 +19,7 @@ jobs:
           - openwrt-21.02
           - openwrt-22.03
           - openwrt-23.05
+          - openwrt-24.10
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -132,7 +133,7 @@ jobs:
         run: echo "GOLANG_COMMIT=master" >> $GITHUB_ENV
 
       - name: Build Package
-        uses: MoetaYuko/gh-action-sdk@master
+        uses: moetayuko/gh-action-sdk@main
         env:
           ARCH: ${{ matrix.arch }}-${{ matrix.ref }}
           EXTRA_FEEDS: >-
