@@ -127,9 +127,8 @@ jobs:
           vers=$(nvcmp -c nvchecker.toml -aj)
           jq -cr 'map("\(.name)=\(.newver)") | .[]' <<< $vers >> $GITHUB_OUTPUT
 
-      # Use go from master for 21.02/22.03/23.05
+      # Use go from master
       - name: Override golang version
-        if: contains(fromJSON('["openwrt-21.02", "openwrt-22.03", "openwrt-23.05"]'), matrix.ref)
         run: echo "GOLANG_COMMIT=master" >> $GITHUB_ENV
 
       - name: Build Package
