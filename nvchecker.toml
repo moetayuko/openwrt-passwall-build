@@ -4,15 +4,15 @@ newver = "new_ver.json"
 
 [passwall]
 source = "git"
-git = "https://github.com/xiaorouji/openwrt-passwall"
+git = "https://github.com/Openwrt-Passwall/openwrt-passwall"
 use_commit = true
 
 [passwall2]
 source = "git"
-git = "https://github.com/xiaorouji/openwrt-passwall2"
+git = "https://github.com/Openwrt-Passwall/openwrt-passwall2"
 use_commit = true
 
 [packages]
 source = "git"
-git = "https://github.com/xiaorouji/openwrt-passwall-packages"
+git = "https://github.com/Openwrt-Passwall/openwrt-passwall-packages"
 use_commit = true

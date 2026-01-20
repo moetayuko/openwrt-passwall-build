@@ -31,9 +31,9 @@ jobs:
         env:
           ARCH: ${{ github.event.inputs.arch }}-${{ github.event.inputs.sdk_version }}
           EXTRA_FEEDS: >-
-            src-git|passwall_packages|https://github.com/xiaorouji/openwrt-passwall-packages;main
-            src-git|passwall_luci|https://github.com/xiaorouji/openwrt-passwall;main
-            src-git|passwall2|https://github.com/xiaorouji/openwrt-passwall2;main
+            src-git|passwall_packages|https://github.com/Openwrt-Passwall/openwrt-passwall-packages;main
+            src-git|passwall_luci|https://github.com/Openwrt-Passwall/openwrt-passwall;main
+            src-git|passwall2|https://github.com/Openwrt-Passwall/openwrt-passwall2;main
           KEY_BUILD: ${{ secrets.SIGN_PRIV_KEY }}
           V: s
           GOLANG_COMMIT: ${{ github.event.inputs.golang_commit }}
