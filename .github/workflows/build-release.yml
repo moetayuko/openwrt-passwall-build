@@ -134,7 +134,7 @@ jobs:
       - name: Build Package
         uses: moetayuko/gh-action-sdk@main
         env:
-          ARCH: ${{ matrix.arch }}-${{ matrix.ref }}
+          ARCH: ${{ matrix.arch }}-${{ matrix.ref == 'openwrt-23.05' && '23.05.6' || matrix.ref }}
           EXTRA_FEEDS: >-
             src-git|passwall_packages|https://github.com/Openwrt-Passwall/openwrt-passwall-packages^${{ steps.ver.outputs.packages }}
             src-git|passwall_luci|https://github.com/Openwrt-Passwall/openwrt-passwall^${{ steps.ver.outputs.passwall }}
