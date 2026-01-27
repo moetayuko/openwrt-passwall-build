@@ -20,6 +20,7 @@ jobs:
           - openwrt-22.03
           - openwrt-23.05
           - openwrt-24.10
+          - openwrt-25.12
     steps:
       - name: Checkout
         uses: actions/checkout@v4
