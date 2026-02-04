@@ -2,16 +2,16 @@
   "version": 2,
   "data": {
     "packages": {
-      "version": "e6550ece3e06d51e9fc7c911af9e77dd68eed9d6",
-      "revision": "e6550ece3e06d51e9fc7c911af9e77dd68eed9d6"
+      "version": "2f04dcda247c6134f69a31798ceaf3e0a9edfd01",
+      "revision": "2f04dcda247c6134f69a31798ceaf3e0a9edfd01"
     },
     "passwall": {
-      "version": "53f62f79c2468e9dcb6eb3da424a50c229cdffcf",
-      "revision": "53f62f79c2468e9dcb6eb3da424a50c229cdffcf"
+      "version": "dce5baeffc7b9b4fc14b1dd9806334b09db70312",
+      "revision": "dce5baeffc7b9b4fc14b1dd9806334b09db70312"
     },
     "passwall2": {
-      "version": "65825f678fb97b66411f8db04c9b66bb2c657d61",
-      "revision": "65825f678fb97b66411f8db04c9b66bb2c657d61"
+      "version": "f83c99cc9d0d0105e9b9afd8687897ea071885ad",
+      "revision": "f83c99cc9d0d0105e9b9afd8687897ea071885ad"
     }
   }
 }
