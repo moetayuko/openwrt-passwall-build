@@ -10,8 +10,8 @@ Binary distribution of [Openwrt-Passwall/openwrt-passwall](https://github.com/Op
 1. Add new opkg key:
 
     ```sh
-    wget -O passwall.pub https://master.dl.sourceforge.net/project/openwrt-passwall-build/passwall.pub
-    opkg-key add passwall.pub
+    wget -O ipk.pub https://master.dl.sourceforge.net/project/openwrt-passwall-build/ipk.pub
+    opkg-key add ipk.pub
     ```
 
 2. Add opkg repository:
