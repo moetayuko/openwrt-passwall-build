@@ -2,12 +2,12 @@
   "version": 2,
   "data": {
     "packages": {
-      "version": "dacc4e03d69ff8ea984b9b88685bd010b9da0ba5",
-      "revision": "dacc4e03d69ff8ea984b9b88685bd010b9da0ba5"
+      "version": "2d269ab22a030383addcc495a90d2449e476487b",
+      "revision": "2d269ab22a030383addcc495a90d2449e476487b"
     },
     "passwall": {
-      "version": "1c4616dc573961dc6f002f71180da7c87e562834",
-      "revision": "1c4616dc573961dc6f002f71180da7c87e562834"
+      "version": "20eb1a7da5028dce6e8a7b69c8353ba5b7062aa0",
+      "revision": "20eb1a7da5028dce6e8a7b69c8353ba5b7062aa0"
     },
     "passwall2": {
       "version": "54049fdc5444a9a38a796494272416625b3920a0",
