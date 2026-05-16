@@ -35,6 +35,7 @@ jobs:
             src-git|passwall_luci|https://github.com/Openwrt-Passwall/openwrt-passwall;main
             src-git|passwall2|https://github.com/Openwrt-Passwall/openwrt-passwall2;main
           KEY_BUILD: ${{ secrets.SIGN_PRIV_KEY }}
+          PRIVATE_KEY: ${{ secrets.APK_PRIVATE_KEY }}
           V: s
           GOLANG_COMMIT: ${{ github.event.inputs.golang_commit }}
 
