@@ -188,7 +188,7 @@ jobs:
         run: cp apk.pub ipk.pub dist/
 
       - name: Uploading package files
-        uses: Burnett01/rsync-deployments@6.0.0
+        uses: Burnett01/rsync-deployments@8.0.5
         with:
           switches: -rvzc --delete
           path: dist/
