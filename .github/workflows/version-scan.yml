@@ -33,7 +33,7 @@ jobs:
 
       - name: Commit new version
         if: steps.compare_version.outputs.ret == 4
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: |
             chore: bump version
