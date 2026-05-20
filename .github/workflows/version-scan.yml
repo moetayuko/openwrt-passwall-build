@@ -9,8 +9,6 @@ jobs:
   check:
     name: Check Version
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - name: Setup Python 3
         uses: actions/setup-python@v6
@@ -22,6 +20,8 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          token: ${{ secrets.PAT }}
 
       - name: Compare version
         id: compare_version
